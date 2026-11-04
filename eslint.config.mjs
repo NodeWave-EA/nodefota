@@ -9,6 +9,7 @@ export default antfu({
   markdown: true,
   antislop: true,
   formatters: true,
+  lintStaged: true,
   rules: {
     'no-console': 'off',
     '@typescript-eslint/no-explicit-any': 'off',

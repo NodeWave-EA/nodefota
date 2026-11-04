@@ -24,7 +24,8 @@
   ],
   "scripts": {
     "typecheck": "bun check",
-    "lint": "eslint . --fix"
+    "lint": "eslint . --fix",
+    "prepare": "husky"
   },
   "peerDependencies": {
     "typescript": "^6"
@@ -38,5 +39,8 @@
     "eslint-plugin-sonarjs": "^4.2.2",
     "husky": "^9.1.7",
     "lint-staged": "^17.6.0"
+  },
+  "lint-staged": {
+    "*": "eslint --fix"
   }
 }
