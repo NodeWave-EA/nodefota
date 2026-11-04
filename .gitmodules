@@ -1,6 +1,8 @@
 [submodule "docker/.supabase"]
 	path = docker/.supabase
 	url = https://github.com/supabase/supabase
+	ignore = dirty
 [submodule "packages/fota-client-esp32"]
 	path = packages/fota-client-esp32
 	url = https://github.com/NodeWave-EA/FOTA-Client-ESP32
+	ignore = dirty
