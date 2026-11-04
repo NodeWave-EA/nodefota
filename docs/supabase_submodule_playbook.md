@@ -26,7 +26,17 @@ Limit the working tree exclusively to the `docker` directory and checkout the br
 
 ```bash
 cd docker/.supabase
-git sparse-checkout set docker
+
+# Switch to strict non-cone mode
+git sparse-checkout init --no-cone
+
+# Set the pattern to ONLY include the root docker folder
+git sparse-checkout set /docker
+
+# Refresh the working tree to purge any stray files
+git read-tree -mu HEAD
+
+# Checkout the master branch
 git checkout master
 cd ../..
 ```
