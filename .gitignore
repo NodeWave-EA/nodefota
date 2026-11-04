@@ -1,34 +1,182 @@
-# dependencies (bun install)
+# =================
+# OS & Environment
+# =================
+.DS_Store
+Thumbs.db
+
+# =================
+# Dependencies & Package Managers
+# =================
+node_modules/
 node_modules
+/node_modules
+jspm_packages/
+lib-cov
+bower_components
+.pnpm-store/*
+examples/**/package-lock.json
+examples/**/yarn.lock
+examples/**/pnpm-lock.yaml
 
-# output
-out
-dist
-*.tgz
+# Yarn / Pnpm / Lerna
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+.pnp.*
+.yarn-integrity
 
-# code coverage
-coverage
-*.lcov
-
-# logs
+# =================
+# Logs, Debugging & Reports
+# =================
 logs
-_.log
-report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
-# dotenv environment variable files
+# =================
+# Runtime Data & Process IDs
+# =================
+pids
+*.pid
+*.seed
+*.pid.lock
+.tern-port
+
+# =================
+# Build Outputs & Bundlers
+# =================
+/build
+build/Release
+/dist
+dist
+out
+.next
+.nuxt
+.output
+.data
+.nitro
+.vuepress/dist
+.svelte-kit/
+**/.vitepress/dist
+**/.vitepress/cache
+.serverless/
+apps/new-docs/*
+
+# =================
+# Caches & Temporary Files
+# =================
+tmp
+temp
+.temp
+.tmp
+upcoming/
+.cache
+.parcel-cache
+.grunt
+.lock-wscript
+.eslintcache
+.stylelintcache
+.node_repl_history
+.fusebox/
+.dynamodb/
+.firebase/
+.docusaurus
+.turbo
+.vercel
+.docz
+.playwright-mcp/*
+.temp/cli-latest
+
+# TypeScript & Build Info
+*.tsbuildinfo
+typings/
+next-env.d.ts
+
+# Test Coverage & Reports
+coverage/
+*.lcov
+.nyc_output
+allure-results
+allure-report
+apps/web/test/
+
+# =================
+# Environment Variables
+# =================
 .env
+.env.*
+.env.tmp
+.env.test
+.env.local
+.env.staging
+.env.production
 .env.development.local
 .env.test.local
 .env.production.local
-.env.local
+.env.*.local
+!.env.example
+!apps/www/.env
+!docker/.env
+!docker/.env.development
+!docker/supabase/.env
+!docker/supabase-traefik/.env
 
-# caches
-.eslintcache
-.cache
-*.tsbuildinfo
-
-# IntelliJ based IDEs
+# =================
+# IDEs & Editors
+# =================
 .idea
+.fleet
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+.vscode-test
+.vscode/*
+!.vscode/content-listing.code-snippets
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
 
-# Finder (MacOS) folder config
-.DS_Store
+# =================
+# AI Assistants & Tools
+# =================
+.claude/*
+!.claude/settings.json
+!.claude/scripts/
+!.claude/skills/
+.claude/skills/me-*
+CLAUDE.md
+!.claude/CLAUDE.md
+
+# =================
+# Services, Configs & Project-Specific
+# =================
+**/supabase/.branches
+**/supabase/.temp
+packages/ui/tokens/**/*.json
+gcloud.json
+**/.sentryclirc
+keys.json
+**/.superset/**
+
+**/.agents
+**/.claude
+**/.windsurf
+**/skills-lock.json
+
+# =================
+# Prisma
+# =================
+**/generated/
