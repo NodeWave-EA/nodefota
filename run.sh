@@ -44,6 +44,7 @@ case "$CMD" in
         link_if_present apps/web/docker-compose.web.dev.yml apps/web/docker-compose.yml
         link_if_present apps/web/.env.development apps/web/.env
         link_if_present docker/supabase/.env.development docker/supabase/.env
+        link_if_present docker/caddy/Caddyfile.dev docker/caddy/Caddyfile
         echo "Successfully switched to DEVELOPMENT mode."
         ;;
       --prod | prod)
@@ -54,6 +55,7 @@ case "$CMD" in
         link_if_present apps/web/docker-compose.web.prod.yml apps/web/docker-compose.yml
         link_if_present apps/web/.env.production apps/web/.env
         link_if_present docker/supabase/.env.production docker/supabase/.env
+        link_if_present docker/caddy/Caddyfile.prod docker/caddy/Caddyfile
         echo "Successfully switched to PRODUCTION mode."
         ;;
       *)
