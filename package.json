@@ -45,6 +45,10 @@
     "typescript": "^6"
   },
   "lint-staged": {
-    "*": "eslint --fix"
+    "*": "eslint --fix",
+    "*.{sh,bash,zsh,fish}": [
+      "shfmt -w -i 2 -ci",
+      "shellcheck"
+    ]
   }
 }
