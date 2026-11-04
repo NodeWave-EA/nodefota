@@ -54,7 +54,7 @@ git submodule add --depth 1 https://github.com/NodeWave-EA/FOTA-Client-ESP32 pac
 git submodule update --init --recursive --depth 1
 
 # 3. Commit submodule reference
-git add .gitmodules packages/fota-client
+git add .gitmodules packages/fota-client-esp32
 git commit -m "packages: add FOTA-Client-ESP32 library submodule"
 ```
 
@@ -94,7 +94,7 @@ If you ever need to remove a submodule completely:
 
 ```bash
 # Example for packages/fota-client-esp32
-git submodule deinit -f packages/fota-client
-rm -rf .git/modules/packages/fota-client
-git rm -f packages/fota-client
+git submodule deinit -f packages/fota-client-esp32
+rm -rf .git/modules/packages/fota-client-esp32
+git rm -f packages/fota-client-esp32
 ```
