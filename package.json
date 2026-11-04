@@ -1,12 +1,15 @@
 {
   "schema": "https://json.schemastore.org/package.json",
   "name": "nodefota",
+  "type": "module",
+  "private": true,
   "description": "Secure Firmware Over The Air Platform by Nodewave",
   "author": {
     "name": "Yebei-Gideon",
     "email": "yebei@nodewave.net",
     "url": "https://nodewave.net"
   },
+  "homepage": "https://github.com/Nodewave-EA/nodefota",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Nodewave-EA/nodefota.git"
@@ -15,20 +18,25 @@
     "email": "bugs-fota@nodewave.net",
     "url": "https://github.com/Nodewave-EA/nodefota/issues"
   },
-  "homepage": "https://github.com/Nodewave-EA/nodefota",
   "module": "index.ts",
-  "type": "module",
-  "private": true,
   "workspaces": [
     "apps/*"
   ],
   "scripts": {
-    "typecheck": "bun check"
-  },
-  "devDependencies": {
-    "@types/bun": "latest"
+    "typecheck": "bun check",
+    "lint": "eslint . --fix"
   },
   "peerDependencies": {
-    "typescript": "^7"
+    "typescript": "^6"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^10.0.0",
+    "@types/bun": "latest",
+    "eslint": "^10.14.0",
+    "eslint-plugin-format": "^2.0.1",
+    "eslint-plugin-slop": "^0.1.3",
+    "eslint-plugin-sonarjs": "^4.2.2",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.6.0"
   }
 }
