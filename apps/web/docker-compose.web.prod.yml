@@ -1,0 +1,28 @@
+name: fota-web-prod
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.web.prod
+    container_name: fota-web
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      NUXT_HOST: 0.0.0.0
+      NUXT_PORT: 5040
+    ports:
+      - '5040:5040'
+    networks:
+      - fota_network
+      - supabase_network
+
+networks:
+  fota_network:
+    external: true
+    name: fota_network
+  supabase_network:
+    external: true
+    name: supabase_default

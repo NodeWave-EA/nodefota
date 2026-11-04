@@ -1,0 +1,28 @@
+name: fota-api-prod
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.api.prod
+    container_name: fota-api
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: production
+      PORT: 5050
+      HOST: 0.0.0.0
+    ports:
+      - '5050:5050'
+    networks:
+      - fota_network
+      - supabase_network
+
+networks:
+  fota_network:
+    external: true
+    name: fota_network
+  supabase_network:
+    external: true
+    name: supabase_default

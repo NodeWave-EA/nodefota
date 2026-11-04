@@ -1,0 +1,26 @@
+FROM oven/bun:1 AS build
+
+WORKDIR /app
+
+COPY package.json ./
+
+RUN bun install --no-save
+
+COPY . .
+
+RUN bun run prisma:generate && bun run build
+
+FROM oven/bun:1-slim AS runtime
+
+WORKDIR /app
+
+COPY --from=build /app/package.json ./
+
+RUN bun install --no-save --production
+
+COPY --from=build /app/dist ./dist
+
+ENV NODE_ENV=production
+EXPOSE 5050
+
+CMD ["bun", "run", "prod"]
