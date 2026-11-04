@@ -1,0 +1,24 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "Supabase PostgreSQL",
+      "Group": "FOTA",
+      "Host": "db",
+      "Port": 5432,
+      "MaintenanceDB": "postgres",
+      "Username": "postgres",
+      "PassFile": "/var/lib/pgadmin/pgpass",
+      "SSLMode": "prefer"
+    },
+    "2": {
+      "Name": "FOTA Shadow Database",
+      "Group": "FOTA",
+      "Host": "shadowdb",
+      "Port": 5432,
+      "MaintenanceDB": "fota",
+      "Username": "shadow_user",
+      "PassFile": "/var/lib/pgadmin/pgpass",
+      "SSLMode": "prefer"
+    }
+  }
+}

@@ -1,0 +1,48 @@
+name: fota-caddy
+
+services:
+  caddy:
+    container_name: fota-caddy
+    image: caddy:2
+    restart: unless-stopped
+    depends_on:
+      api-gw:
+        condition: service_healthy
+      studio:
+        condition: service_healthy
+    ports:
+      - '80:80'
+      - '443:443'
+      - '443:443/udp'
+    env_file:
+      - ../supabase/.env
+    environment:
+      PROXY_DOMAIN: ${PROXY_DOMAIN:-supabase.localhost}
+      PROXY_AUTH_USERNAME: ${DASHBOARD_USERNAME:-supabase}
+    command:
+      - /bin/sh
+      - -c
+      - |
+        export PROXY_AUTH_PASSWORD="$$(caddy hash-password --plaintext "$$DASHBOARD_PASSWORD")"
+        caddy run --config /etc/caddy/Caddyfile --adapter caddyfile
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - fota_network
+      - supabase_network
+
+volumes:
+  caddy_data:
+    name: fota_caddy_data
+  caddy_config:
+    name: fota_caddy_config
+
+networks:
+  fota_network:
+    name: fota_network
+    external: true
+  supabase_network:
+    name: supabase_default
+    external: true

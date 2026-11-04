@@ -1,0 +1,47 @@
+name: fota-shadowdb-admin
+
+services:
+  shadowdb_admin:
+    image: dpage/pgadmin4:9.18.0
+    container_name: shadowdb_admin
+    restart: always
+    env_file:
+      - ../supabase/.env
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@shadow.com
+      PGADMIN_DEFAULT_PASSWORD: adminpassword
+      PGADMIN_CONFIG_SERVER_MODE: 'True'
+      PGADMIN_REPLACE_SERVERS_ON_STARTUP: 'True'
+      SHADOWDB_PASSWORD: ${SHADOWDB_PASSWORD:-mysecurepassword}
+      PGADMIN_SERVER_JSON_FILE: /pgadmin4/servers.json
+    entrypoint:
+      - /bin/sh
+      - -c
+    command:
+      - |
+        printf 'db:5432:*:postgres:%s\nshadowdb:5432:*:shadow_user:%s\n' \
+          "$$POSTGRES_PASSWORD" "$$SHADOWDB_PASSWORD" > /var/lib/pgadmin/pgpass
+        chmod 600 /var/lib/pgadmin/pgpass
+        exec /entrypoint.sh
+    ports:
+      - '8080:80'
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+      - ./servers.json:/pgadmin4/servers.json:ro
+    networks:
+      - fota_network
+      - supabase_network
+
+volumes:
+  pgadmin_data:
+    name: fota_pgadmin_data
+
+networks:
+  fota_network:
+    name: fota_network
+    driver: bridge
+    external: true
+  supabase_network:
+    name: supabase_default
+    driver: bridge
+    external: true

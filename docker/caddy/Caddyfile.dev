@@ -1,0 +1,40 @@
+# Supabase Studio & Core API
+supabase.localhost, supabase.127.0.0.1.nip.io {
+    tls internal
+
+    @supabase_api path /auth/v1/* /rest/v1/* /graphql/v1 /realtime/v1/* /storage/v1/* /functions/v1/* /mcp /sso/*
+
+    handle @supabase_api {
+        reverse_proxy kong:8000
+    }
+
+    handle {
+        basic_auth {
+            {$PROXY_AUTH_USERNAME} {$PROXY_AUTH_PASSWORD}
+        }
+        reverse_proxy studio:3000
+    }
+
+    header -server
+}
+
+# FOTA Frontend Dashboard
+web.localhost, web.127.0.0.1.nip.io {
+    tls internal
+    reverse_proxy fota-web-dev:5040
+    header -server
+}
+
+# FOTA Backend API
+api.localhost, api.127.0.0.1.nip.io {
+    tls internal
+    reverse_proxy fota-api-dev:5050
+    header -server
+}
+
+# pgAdmin
+pgadmin.localhost, pgadmin.127.0.0.1.nip.io {
+    tls internal
+    reverse_proxy shadowdb_admin:80
+    header -server
+}
