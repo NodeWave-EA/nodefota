@@ -51,3 +51,21 @@ From the repository root, use the Bun shortcut:
 ```bash
 bun run nest -- g module users
 ```
+
+## Docker development permissions
+
+The API and web development containers run as host UID/GID `1000:1000` by
+default so Docker-generated files remain editable by the host user. Override
+this when needed:
+
+```bash
+LOCAL_UID=$(id -u) LOCAL_GID=$(id -g) ./run.sh api
+```
+
+After changing this configuration on an existing checkout, repair previously
+root-owned generated files before starting the services:
+
+```bash
+docker run --rm -v "$PWD/apps/web/.nuxt:/data" alpine:3.22 chown -R "$(id -u):$(id -g)" /data
+docker run --rm -v "$PWD/apps/api/dist:/data" alpine:3.22 chown -R "$(id -u):$(id -g)" /data
+```

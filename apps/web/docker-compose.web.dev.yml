@@ -6,6 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile.web.dev
     container_name: fota-web-dev
+    user: '${LOCAL_UID:-1000}:${LOCAL_GID:-1000}'
     env_file:
       - .env
     environment:
