@@ -19,6 +19,7 @@ async function bootstrap() {
   const configService = app.get(ConfigService)
   const PORT = configService.get<number>('PORT') as number
   const HOST = configService.get<string>('HOST') as string
+  const allowedOrigins = configService.get<string>('ALLOWED_ORIGINS')?.split(',') || []
 
   app.enableVersioning({
     type: VersioningType.URI,
@@ -26,13 +27,39 @@ async function bootstrap() {
     defaultVersion: '1',
   })
 
+  app.enableCors({
+    origin: process.env.NODE_ENV === 'production'
+      ? allowedOrigins
+      : '*',
+    credentials: true,
+    methods: [
+      'GET',
+      'POST',
+      'PUT',
+      'PATCH',
+      'DELETE',
+      'OPTIONS',
+    ],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  })
+
+  // Swagger configuration
   const swaggerConfig = new DocumentBuilder()
     .setTitle('FOTA API')
     .setDescription('Firmware Over The Air platform API')
     .setVersion('1.0')
+    .setContact('FOTA Team', 'https://nodewave.net', 'info@nodewave.net')
+    .setLicense('MIT', 'https://opensource.org/licenses/MIT')
+    .addServer(`http://${HOST}:${PORT}`, 'Server')
     .build()
   const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig)
-  SwaggerModule.setup('/', app, swaggerDocument)
+  SwaggerModule.setup('/', app, swaggerDocument, {
+    swaggerOptions: {
+      persistAuthorization: true,
+      deepLinking: true,
+      defaultModelsExpandDepth: -1,
+    },
+  })
 
   app.enableShutdownHooks()
 
