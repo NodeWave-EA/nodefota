@@ -1,6 +1,6 @@
 import type { OnModuleDestroy, OnModuleInit } from '@nestjs/common'
-import type { ConfigService } from '@nestjs/config'
 import { Injectable } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import { PrismaPg } from '@prisma/adapter-pg'
 import { PrismaClient } from '#generated/prisma/client.js'
 import { LoggerService } from '#logger/logger.service.js'
@@ -18,11 +18,11 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
 
   async onModuleDestroy() {
     logger.info('Disconnecting from the database...')
-    await this.$connect()
+    await this.$disconnect()
   }
 
   async onModuleInit() {
     logger.info('Connecting to the database...')
-    await this.$disconnect()
+    await this.$connect()
   }
 }
