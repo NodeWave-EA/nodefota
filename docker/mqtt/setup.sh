@@ -3,15 +3,7 @@
 # ==============================================================================
 # 1. INITIALIZATION & TEMPORARY PERMISSION LIFTOFF
 # ==============================================================================
-# Load environment variables safely if .env exists
-if [ -f .env ]; then
-  set -a
-  # shellcheck disable=SC1091
-  source .env
-  set +a
-else
-  MQTT_CONTAINER_NAME="fota_mqtt_broker"
-fi
+MQTT_CONTAINER_NAME="fota-mqtt-broker"
 
 echo "Temporarily reclaiming file ownership for generation..."
 if [ -d "./config" ] || [ -d "./certs" ] || [ -d "./data" ] || [ -d "./log" ]; then

@@ -1,0 +1,32 @@
+name: fota-mqtt
+
+services:
+  # MQTT Broker Service
+  mqtt-broker:
+    image: eclipse-mosquitto:2.1.2-alpine
+    container_name: fota-mqtt-broker
+    environment:
+      MOSQUITTO_LOG_LEVEL: debug
+    ports:
+      - '1883:1883' # Default MQTT port
+      - '8883:8883' # TLS port
+      - '9001:9001' # Default MQTT port for WebSockets
+    networks:
+      - fota_network
+      - supabase_network
+    volumes:
+      # Mount config, data, and log directories
+      - ./config:/mosquitto/config
+      - ./certs:/mosquitto/certs:ro
+      - ./data:/mosquitto/data:rw
+      - ./log:/mosquitto/log:rw
+    restart: unless-stopped
+networks:
+  fota_network:
+    name: fota_network
+    driver: bridge
+    external: true
+  supabase_network:
+    name: supabase_default
+    driver: bridge
+    external: true

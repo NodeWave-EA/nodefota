@@ -1,0 +1,23 @@
+name: fota-mailpit
+
+services:
+  mailpit:
+    image: axllent/mailpit:v1.33.0
+    container_name: fota-mailpit
+    restart: always
+    ports:
+      - '1025:1025' # SMTP server
+      - '8025:8025' # Web UI Dashboard
+    networks:
+      - fota_network
+      - supabase_network
+
+networks:
+  fota_network:
+    name: fota_network
+    driver: bridge
+    external: true
+  supabase_network:
+    name: supabase_default
+    driver: bridge
+    external: true
