@@ -3,6 +3,7 @@ import process from 'node:process'
 import { VersioningType } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { NestFactory } from '@nestjs/core'
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { AppModule, ObserveInstrument } from '#app/app.module.js'
 import { LoggerService } from '#logger/logger.service.js'
 
@@ -24,6 +25,14 @@ async function bootstrap() {
     prefix: 'v',
     defaultVersion: '1',
   })
+
+  const swaggerConfig = new DocumentBuilder()
+    .setTitle('FOTA API')
+    .setDescription('Firmware Over The Air platform API')
+    .setVersion('1.0')
+    .build()
+  const swaggerDocument = SwaggerModule.createDocument(app, swaggerConfig)
+  SwaggerModule.setup('/', app, swaggerDocument)
 
   app.enableShutdownHooks()
 
