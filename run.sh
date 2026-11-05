@@ -65,6 +65,15 @@ case "$CMD" in
     esac
     ;;
 
+  dev)
+    "$0" env --dev
+    exec "$0" recreate
+    ;;
+  prod)
+    "$0" env --prod
+    exec "$0" recreate
+    ;;
+
   # =========================================================================
   # Lifecycle & Stack Commands (Up / Down / Recreate)
   # =========================================================================
@@ -92,6 +101,10 @@ case "$CMD" in
   recreate)
     ensure_networks
     exec docker compose up -d --wait --build --force-recreate "$@"
+    ;;
+  api | web | mqtt | mailpit | caddy | supabase)
+    ensure_networks
+    exec docker compose up -d --wait --build "$CMD" "$@"
     ;;
   create)
     exec docker compose create "$@"
@@ -258,6 +271,8 @@ Environment Commands:
   env --prod                Switch app and Docker symlinks to Production configuration
 
 Lifecycle & Stack Commands:
+  dev                       Switch to development configuration and recreate the stack
+  prod                      Switch to production configuration and recreate the stack
   start                     Start stack with build and wait for healthchecks (up -d --wait --build)
   up-no-build               Start stack without rebuilding images (--wait)
   stop                      Stop containers (down)
@@ -265,6 +280,12 @@ Lifecycle & Stack Commands:
   down-all                  Stop containers, remove volumes, orphans, and local images
   restart [service]         Restart entire stack or a specific service
   recreate                  Force recreate and restart all containers (--force-recreate)
+  api                       Build and start only the API service
+  web                       Build and start only the web service
+  mqtt                      Build and start only the MQTT broker
+  mailpit                   Build and start only Mailpit
+  caddy                     Build and start only the Caddy reverse proxy
+  supabase                  Build and start only the Supabase stack (Postgres, Kong, Realtime, Storage, etc.)
   create                    Create containers without starting them
   start-containers          Start existing stopped containers
   stop-containers           Stop running containers without removing them
