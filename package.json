@@ -26,6 +26,7 @@
     "dev": "bun --filter '*' --parallel --output-style grouped dev",
     "dev:api": "bun --filter '@fota/api' dev",
     "dev:web": "bun --filter '@fota/web' dev",
+    "nest": "./apps/api/nest.sh",
     "build": "bun --filter '*' --parallel --output-style grouped build",
     "build:web": "bun --filter '@fota/web' build",
     "build:api": "bun --filter '@fota/api' build",
