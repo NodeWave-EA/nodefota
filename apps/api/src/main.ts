@@ -5,7 +5,7 @@ import { ConfigService } from '@nestjs/config'
 import { NestFactory } from '@nestjs/core'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { AppModule, ObserveInstrument } from '#app/app.module.js'
-import { LoggerService } from '#logger/logger.service.js'
+import { LoggerService } from '#modules/logger/logger.service.js'
 
 const logger = new LoggerService()
 logger.setContext('Bootstrap')

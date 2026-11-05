@@ -2,8 +2,8 @@ import type { OnModuleDestroy, OnModuleInit } from '@nestjs/common'
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { PrismaPg } from '@prisma/adapter-pg'
-import { PrismaClient } from '#generated/prisma/client.js'
-import { LoggerService } from '#logger/logger.service.js'
+import { LoggerService } from '#modules/logger/logger.service.js'
+import { PrismaClient } from '#modules/prisma/generated/prisma/client.js'
 
 const logger = new LoggerService('PrismaService')
 

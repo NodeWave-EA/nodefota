@@ -4,9 +4,9 @@ import { ConfigModule } from '@nestjs/config'
 import { createObserveModule } from '@nestjs/observe'
 import { AppController } from '#app/app.controller.js'
 import { AppService } from '#app/app.service.js'
-import { AuthModule } from '#auth/auth.module.js'
-import { LoggerModule } from '#logger/logger.module.js'
-import { PrismaModule } from '#prisma/prisma.module.js'
+import { AuthModule } from '#modules/auth/auth.module.js'
+import { LoggerModule } from '#modules/logger/logger.module.js'
+import { PrismaModule } from '#modules/prisma/prisma.module.js'
 
 export const { ObserveModule, ObserveInstrument } = createObserveModule()
 const { OBSERVE_APP_KEY, OBSERVE_APP_SECRET } = process.env
