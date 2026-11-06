@@ -26,6 +26,67 @@ link_if_present() {
   fi
 }
 
+switch_env() {
+  sub="${1:-}"
+  case "$sub" in
+    --dev | dev)
+      echo "==> Switching environment to DEVELOPMENT..."
+      link_if_present docker-compose.dev.yml docker-compose.yml
+      link_if_present apps/api/docker-compose.api.dev.yml apps/api/docker-compose.yml
+      link_if_present apps/api/.env.development apps/api/.env
+      link_if_present apps/web/docker-compose.web.dev.yml apps/web/docker-compose.yml
+      link_if_present apps/web/.env.development apps/web/.env
+      link_if_present docker/supabase/.env.development docker/supabase/.env
+      link_if_present docker/caddy/Caddyfile.dev docker/caddy/Caddyfile
+      echo "Successfully switched to DEVELOPMENT mode."
+      ;;
+    --prod | prod)
+      echo "==> Switching environment to PRODUCTION..."
+      link_if_present docker-compose.prod.yml docker-compose.yml
+      link_if_present apps/api/docker-compose.api.prod.yml apps/api/docker-compose.yml
+      link_if_present apps/api/.env.production apps/api/.env
+      link_if_present apps/web/docker-compose.web.prod.yml apps/web/docker-compose.yml
+      link_if_present apps/web/.env.production apps/web/.env
+      link_if_present docker/supabase/.env.production docker/supabase/.env
+      link_if_present docker/caddy/Caddyfile.prod docker/caddy/Caddyfile
+      echo "Successfully switched to PRODUCTION mode."
+      ;;
+    *)
+      echo "Usage: $(basename "$0") env [--dev | --prod]" >&2
+      exit 1
+      ;;
+  esac
+}
+
+# Helper to extract --watch / -w flag from positional arguments
+WATCH_MODE=false
+FILTERED_ARGS=""
+parse_watch_flag() {
+  WATCH_MODE=false
+  FILTERED_ARGS=""
+  for arg in "$@"; do
+    if [ "$arg" = "--watch" ] || [ "$arg" = "-w" ]; then
+      WATCH_MODE=true
+    else
+      FILTERED_ARGS="$FILTERED_ARGS $arg"
+    fi
+  done
+}
+
+run_recreate() {
+  parse_watch_flag "$@"
+  ensure_networks
+  if [ "$WATCH_MODE" = true ]; then
+    # shellcheck disable=SC2086
+    docker compose up -d --wait --build --force-recreate $FILTERED_ARGS
+    echo "==> Starting Docker Compose WATCH mode..."
+    # shellcheck disable=SC2086
+    exec docker compose watch $FILTERED_ARGS
+  else
+    exec docker compose up -d --wait --build --force-recreate "$@"
+  fi
+}
+
 CMD="${1:-help}"
 [ "$#" -gt 0 ] && shift
 
@@ -34,56 +95,70 @@ case "$CMD" in
   # Environment Management
   # =========================================================================
   env)
-    sub="${1:-}"
-    case "$sub" in
-      --dev | dev)
-        echo "==> Switching environment to DEVELOPMENT..."
-        link_if_present docker-compose.dev.yml docker-compose.yml
-        link_if_present apps/api/docker-compose.api.dev.yml apps/api/docker-compose.yml
-        link_if_present apps/api/.env.development apps/api/.env
-        link_if_present apps/web/docker-compose.web.dev.yml apps/web/docker-compose.yml
-        link_if_present apps/web/.env.development apps/web/.env
-        link_if_present docker/supabase/.env.development docker/supabase/.env
-        link_if_present docker/caddy/Caddyfile.dev docker/caddy/Caddyfile
-        echo "Successfully switched to DEVELOPMENT mode."
-        ;;
-      --prod | prod)
-        echo "==> Switching environment to PRODUCTION..."
-        link_if_present docker-compose.prod.yml docker-compose.yml
-        link_if_present apps/api/docker-compose.api.prod.yml apps/api/docker-compose.yml
-        link_if_present apps/api/.env.production apps/api/.env
-        link_if_present apps/web/docker-compose.web.prod.yml apps/web/docker-compose.yml
-        link_if_present apps/web/.env.production apps/web/.env
-        link_if_present docker/supabase/.env.production docker/supabase/.env
-        link_if_present docker/caddy/Caddyfile.prod docker/caddy/Caddyfile
-        echo "Successfully switched to PRODUCTION mode."
-        ;;
-      *)
-        echo "Usage: $(basename "$0") env [--dev | --prod]" >&2
-        exit 1
-        ;;
-    esac
+    switch_env "$@"
     ;;
 
   dev)
-    "$0" env --dev
-    exec "$0" recreate
+    parse_watch_flag "$@"
+    switch_env --dev
+    if [ "$WATCH_MODE" = true ]; then
+      ensure_networks
+      echo "==> Recreating stack and starting WATCH mode..."
+      # shellcheck disable=SC2086
+      docker compose up -d --wait --build --force-recreate $FILTERED_ARGS
+      # shellcheck disable=SC2086
+      exec docker compose watch $FILTERED_ARGS
+    else
+      run_recreate "$@"
+    fi
     ;;
+
+  dev-watch)
+    switch_env --dev
+    ensure_networks
+    echo "==> Recreating stack and starting WATCH mode..."
+    docker compose up -d --wait --build --force-recreate "$@"
+    exec docker compose watch "$@"
+    ;;
+
   prod)
-    "$0" env --prod
-    exec "$0" recreate
+    switch_env --prod
+    run_recreate "$@"
     ;;
 
   # =========================================================================
-  # Lifecycle & Stack Commands (Up / Down / Recreate)
+  # Lifecycle & Stack Commands (Up / Down / Recreate / Watch)
   # =========================================================================
   start | up)
+    parse_watch_flag "$@"
     ensure_networks
-    exec docker compose up -d --wait --build "$@"
+    if [ "$WATCH_MODE" = true ]; then
+      # shellcheck disable=SC2086
+      docker compose up -d --wait --build $FILTERED_ARGS
+      echo "==> Starting Docker Compose WATCH mode..."
+      # shellcheck disable=SC2086
+      exec docker compose watch $FILTERED_ARGS
+    else
+      exec docker compose up -d --wait --build "$@"
+    fi
     ;;
   up-no-build)
+    parse_watch_flag "$@"
     ensure_networks
-    exec docker compose up -d --wait "$@"
+    if [ "$WATCH_MODE" = true ]; then
+      # shellcheck disable=SC2086
+      docker compose up -d --wait $FILTERED_ARGS
+      echo "==> Starting Docker Compose WATCH mode..."
+      # shellcheck disable=SC2086
+      exec docker compose watch $FILTERED_ARGS
+    else
+      exec docker compose up -d --wait "$@"
+    fi
+    ;;
+  watch)
+    ensure_networks
+    echo "==> Starting Docker Compose WATCH mode..."
+    exec docker compose watch "$@"
     ;;
   stop | down)
     exec docker compose down "$@"
@@ -96,15 +171,32 @@ case "$CMD" in
     exec docker compose down --rmi all -v --remove-orphans "$@"
     ;;
   restart)
-    exec docker compose restart "$@"
+    parse_watch_flag "$@"
+    if [ "$WATCH_MODE" = true ]; then
+      # shellcheck disable=SC2086
+      docker compose restart $FILTERED_ARGS
+      echo "==> Starting Docker Compose WATCH mode..."
+      # shellcheck disable=SC2086
+      exec docker compose watch $FILTERED_ARGS
+    else
+      exec docker compose restart "$@"
+    fi
     ;;
   recreate)
-    ensure_networks
-    exec docker compose up -d --wait --build --force-recreate "$@"
+    run_recreate "$@"
     ;;
   api | web | mqtt | mailpit | caddy | supabase)
+    parse_watch_flag "$@"
     ensure_networks
-    exec docker compose up -d --wait --build "$CMD" "$@"
+    if [ "$WATCH_MODE" = true ]; then
+      # shellcheck disable=SC2086
+      docker compose up -d --wait --build "$CMD" $FILTERED_ARGS
+      echo "==> Starting Docker Compose WATCH mode for $CMD..."
+      # shellcheck disable=SC2086
+      exec docker compose watch "$CMD" $FILTERED_ARGS
+    else
+      exec docker compose up -d --wait --build "$CMD" "$@"
+    fi
     ;;
   create)
     exec docker compose create "$@"
@@ -170,7 +262,7 @@ case "$CMD" in
     ;;
 
   # =========================================================================
-  # Execution & Interactive Debugging
+  # Execution & File Transfer Commands
   # =========================================================================
   exec)
     [ $# -eq 0 ] && {
@@ -223,9 +315,36 @@ case "$CMD" in
   cp)
     [ $# -lt 2 ] && {
       echo "Usage: $(basename "$0") cp <src> <dest>" >&2
+      echo "Examples:" >&2
+      echo "  $(basename "$0") cp api:/app/package.json ./package.json" >&2
+      echo "  $(basename "$0") cp ./config.json api:/app/config.json" >&2
       exit 1
     }
     exec docker compose cp "$@"
+    ;;
+  cp-from)
+    [ $# -lt 3 ] && {
+      echo "Usage: $(basename "$0") cp-from <service> <container_path> <host_destination>" >&2
+      echo "Example: $(basename "$0") cp-from api /app/dist ./dist" >&2
+      exit 1
+    }
+    svc="$1"
+    cpath="$2"
+    hdest="$3"
+    echo "==> Copying '$cpath' from service '$svc' to local host '$hdest'..."
+    exec docker compose cp "$svc:$cpath" "$hdest"
+    ;;
+  cp-to)
+    [ $# -lt 3 ] && {
+      echo "Usage: $(basename "$0") cp-to <service> <host_source> <container_destination>" >&2
+      echo "Example: $(basename "$0") cp-to api ./config.json /app/config.json" >&2
+      exit 1
+    }
+    svc="$1"
+    hsrc="$2"
+    cdest="$3"
+    echo "==> Copying local host '$hsrc' to '$cdest' in service '$svc'..."
+    exec docker compose cp "$hsrc" "$svc:$cdest"
     ;;
   port)
     [ $# -eq 0 ] && {
@@ -235,7 +354,6 @@ case "$CMD" in
     svc="$1"
     shift
     if [ $# -eq 0 ]; then
-      # Automatically find exposed ports for the service using docker compose config & inspect
       cid=$(docker compose ps -q "$svc")
       [ -z "$cid" ] && {
         echo "Service '$svc' is not running" >&2
@@ -244,7 +362,6 @@ case "$CMD" in
       echo "==> Port mappings for service '$svc':"
       docker inspect --format='{{range $p, $conf := .NetworkSettings.Ports}}{{if $conf}}  {{$p}} -> {{range $conf}}{{.HostIp}}:{{.HostPort}} {{end}}{{else}}  {{$p}} (unmapped){{end}}{{end}}' "$cid"
     else
-      # Pass through to native docker compose port if specific port provided
       exec docker compose port "$svc" "$@"
     fi
     ;;
@@ -271,53 +388,34 @@ Environment Commands:
   env --prod                Switch app and Docker symlinks to Production configuration
 
 Lifecycle & Stack Commands:
-  dev                       Switch to development configuration and recreate the stack
+  dev                       Switch to dev configuration and recreate the stack
+  dev --watch | dev -w      Switch to dev configuration, recreate stack, and launch WATCH mode
+  dev-watch                 Shortcut for 'dev --watch'
   prod                      Switch to production configuration and recreate the stack
-  start                     Start stack with build and wait for healthchecks (up -d --wait --build)
-  up-no-build               Start stack without rebuilding images (--wait)
-  stop                      Stop containers (down)
-  down-volumes              Stop containers and delete persistent database/cache volumes (-v)
+  recreate [--watch | -w]   Force recreate containers and optionally attach WATCH mode
+  restart [svc] [--watch]   Restart container(s) and optionally attach WATCH mode
+  start | up [--watch]      Start stack and optionally attach WATCH mode
+  api | web [--watch]       Start only API or Web service and optionally attach WATCH mode
+  watch [service]           Start Docker Compose Watch mode explicitly
+  stop / down               Stop containers
+  down-volumes              Stop containers and delete persistent volumes (-v)
   down-all                  Stop containers, remove volumes, orphans, and local images
-  restart [service]         Restart entire stack or a specific service
-  recreate                  Force recreate and restart all containers (--force-recreate)
-  api                       Build and start only the API service
-  web                       Build and start only the web service
-  mqtt                      Build and start only the MQTT broker
-  mailpit                   Build and start only Mailpit
-  caddy                     Build and start only the Caddy reverse proxy
-  supabase                  Build and start only the Supabase stack (Postgres, Kong, Realtime, Storage, etc.)
-  create                    Create containers without starting them
-  start-containers          Start existing stopped containers
-  stop-containers           Stop running containers without removing them
-  pause / unpause           Pause or resume running containers
-  kill                      Force stop containers immediately
 
-Build & Image Commands:
-  build [service]           Build or rebuild container services
-  build-no-cache            Build services from scratch without using cache
-  pull                      Pull updated base container images
-  push                      Push service images to a registry
-  images                    List images used by stack services
+File Transfer Commands:
+  cp-from <svc> <cpath> <hdest>   Copy a file/directory from a container to the local host
+  cp-to <svc> <hsrc> <cdest>     Copy a file/directory from the local host into a container
+  cp <src> <dest>                Native Docker Compose copy (e.g., cp api:/app/logs ./logs)
 
 Monitoring & Logging Commands:
   status                    Show running container status (ps)
   logs [service]            Stream container logs live (logs -f)
   logs-tail                 Stream the last 100 lines of logs live
-  logs-timestamps           Stream logs live with absolute timestamps
-  top                       Display running processes of stack services
   stats                     Display live container resource usage statistics
-  events                    Stream container lifecycle events in real time
 
 Execution & Debugging Commands:
   exec <svc> <cmd>          Execute a command inside a running container shell
-  run <svc> <cmd>           Run a one-off command in a temporary container (--rm)
-  inspect <service>         Inspect container configuration directly via Docker
+  interactive <svc>         Open an interactive shell inside a running container
   printenv <service>        Print environment variables loaded inside a container
-  cp <src> <dest>           Copy files/folders between local machine and containers
-  port <svc> <port>         Print the public port mapped to a container port
-  wait                      Block until containers stop
-
-Configuration Commands:
   config                    Inspect the fully resolved Docker Compose compilation tree
 
 EOF
