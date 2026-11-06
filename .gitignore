@@ -114,21 +114,9 @@ apps/web/test/
 # =================
 .env
 .env.*
-.env.tmp
-.env.test
-.env.local
-.env.staging
-.env.production
-.env.development.local
-.env.test.local
-.env.production.local
 .env.*.local
 !.env.example
-!apps/www/.env
-!docker/.env
-!docker/.env.development
-!docker/supabase/.env
-!docker/supabase-traefik/.env
+!.env.template
 
 # =================
 # IDEs & Editors
@@ -180,3 +168,5 @@ keys.json
 # Prisma
 # =================
 **/generated/
+
+**/test
