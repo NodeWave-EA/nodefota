@@ -5,7 +5,7 @@ supabase.localhost, supabase.127.0.0.1.nip.io {
     @supabase_api path /auth/v1/* /rest/v1/* /graphql/v1 /realtime/v1/* /storage/v1/* /functions/v1/* /mcp /sso/*
 
     handle @supabase_api {
-        reverse_proxy kong:8000
+        reverse_proxy api-gw:8000
     }
 
     handle {
@@ -36,5 +36,12 @@ api.localhost, api.127.0.0.1.nip.io {
 pgadmin.localhost, pgadmin.127.0.0.1.nip.io {
     tls internal
     reverse_proxy shadowdb_admin:80
+    header -server
+}
+
+# Mailpit email dashboard
+mailpit.localhost, mailpit.127.0.0.1.nip.io {
+    tls internal
+    reverse_proxy fota-mailpit:8025
     header -server
 }
