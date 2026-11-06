@@ -21,8 +21,26 @@ link_if_present() {
   target="$1"
   link="$2"
   if [ -e "$target" ]; then
-    ln -sfn "$(basename "$target")" "$link"
-    echo "  ✓ Updated $link -> $target"
+    target_dir="$(dirname "$target")"
+    link_dir="$(dirname "$link")"
+
+    if [ "$target_dir" = "$link_dir" ]; then
+      rel_target="$(basename "$target")"
+    else
+      up=""
+      saved_ifs="$IFS"
+      IFS="/"
+      # shellcheck disable=SC2086
+      set -- $link_dir
+      IFS="$saved_ifs"
+      for part in "$@"; do
+        [ -n "$part" ] && [ "$part" != "." ] && up="../$up"
+      done
+      rel_target="${up}${target}"
+    fi
+
+    ln -sfn "$rel_target" "$link"
+    echo "  ✓ Updated $link -> $rel_target"
   fi
 }
 
@@ -38,6 +56,8 @@ switch_env() {
       link_if_present apps/web/.env.development apps/web/.env
       link_if_present docker/supabase/.env.development docker/supabase/.env
       link_if_present docker/caddy/Caddyfile.dev docker/caddy/Caddyfile
+      link_if_present docker/supabase/.env.development apps/web/.env.supabase
+      link_if_present docker/supabase/.env.development apps/api/.env.supabase
       echo "Successfully switched to DEVELOPMENT mode."
       ;;
     --prod | prod)
@@ -49,6 +69,8 @@ switch_env() {
       link_if_present apps/web/.env.production apps/web/.env
       link_if_present docker/supabase/.env.production docker/supabase/.env
       link_if_present docker/caddy/Caddyfile.prod docker/caddy/Caddyfile
+      link_if_present docker/supabase/.env.production apps/web/.env.supabase
+      link_if_present docker/supabase/.env.production apps/api/.env.supabase
       echo "Successfully switched to PRODUCTION mode."
       ;;
     *)
