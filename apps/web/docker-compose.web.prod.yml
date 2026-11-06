@@ -9,6 +9,7 @@ services:
     restart: unless-stopped
     env_file:
       - .env
+      - .env.supabase
     environment:
       NODE_ENV: production
       NUXT_HOST: 0.0.0.0

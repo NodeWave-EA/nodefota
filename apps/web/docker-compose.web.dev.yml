@@ -9,6 +9,7 @@ services:
     user: '${LOCAL_UID:-1000}:${LOCAL_GID:-1000}'
     env_file:
       - .env
+      - .env.supabase
     environment:
       NODE_ENV: development
       NUXT_HOST: 0.0.0.0
@@ -23,6 +24,32 @@ services:
     networks:
       - fota_network
       - supabase_network
+
+    # Docker Compose Watch configuration
+    develop:
+      watch:
+        # Sync Nuxt app directory
+        - action: sync
+          path: ./app
+          target: /app/app
+        # Sync static assets
+        - action: sync
+          path: ./public
+          target: /app/public
+        # Sync Nuxt server engine files
+        - action: sync
+          path: ./server
+          target: /app/server
+        # Sync Nuxt config
+        - action: sync
+          path: ./nuxt.config.ts
+          target: /app/nuxt.config.ts
+        # Restart container on environment variable updates
+        - action: restart
+          path: .env
+        # Rebuild container image if dependencies change
+        - action: rebuild
+          path: package.json
 
 networks:
   fota_network:

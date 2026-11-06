@@ -11,3 +11,4 @@ include:
 networks:
   default:
     name: supabase_default
+    external: true

@@ -9,10 +9,12 @@ services:
     restart: unless-stopped
     env_file:
       - .env
+      - .env.supabase
     environment:
       NODE_ENV: production
       PORT: 5050
       HOST: 0.0.0.0
+      SUPABASE_URL: http://api-gw:8000
     ports:
       - '5050:5050'
     networks:

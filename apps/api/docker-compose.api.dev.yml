@@ -9,20 +9,41 @@ services:
     user: '${LOCAL_UID:-1000}:${LOCAL_GID:-1000}'
     env_file:
       - .env
+      - .env.supabase
     environment:
       NODE_ENV: development
       PORT: 5050
       HOST: 0.0.0.0
+      SUPABASE_URL: http://api-gw:8000
     ports:
       - '5050:5050'
     volumes:
       - .:/app
       - ./node_modules:/app/node_modules
       - ../../node_modules:/node_modules
-
     networks:
       - fota_network
       - supabase_network
+
+    # Docker Compose Watch configuration
+    develop:
+      watch:
+        # Sync source code
+        - action: sync
+          path: ./src
+          target: /app/src
+        # Sync Prisma schema changes
+        - action: sync
+          path: ./prisma
+          target: /app/prisma
+        # Restart container on environment variable updates
+        - action: restart
+          path: .env
+        - action: restart
+          path: ../../docker/supabase/.env
+        # Rebuild container image if dependencies change
+        - action: rebuild
+          path: package.json
 
 networks:
   fota_network:
