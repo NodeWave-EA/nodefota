@@ -19,10 +19,12 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
   async onModuleDestroy() {
     logger.info('Disconnecting from the database...')
     await this.$disconnect()
+    logger.info('Disconnected from the database')
   }
 
   async onModuleInit() {
     logger.info('Connecting to the database...')
     await this.$connect()
+    logger.info('Connected to the database')
   }
 }
