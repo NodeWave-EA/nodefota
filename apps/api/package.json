@@ -22,13 +22,13 @@
     "prisma:studio": "prisma studio --browser none"
   },
   "dependencies": {
-    "@nestjs/common": "^12.3.3",
-    "@nestjs/config": "^12.1.0",
-    "@nestjs/core": "^12.3.3",
-    "@nestjs/observe": "^0.3.22",
-    "@nestjs/passport": "^12.0.0",
-    "@nestjs/platform-express": "^12.3.3",
-    "@nestjs/swagger": "^12.1.0",
+    "@nestjs/common": "^12.4.0",
+    "@nestjs/config": "^12.1.1",
+    "@nestjs/core": "^12.4.0",
+    "@nestjs/observe": "^0.3.24",
+    "@nestjs/passport": "^12.0.1",
+    "@nestjs/platform-express": "^12.4.0",
+    "@nestjs/swagger": "^12.1.1",
     "@prisma/adapter-pg": "^7.10.1",
     "@prisma/client": "7",
     "@supabase/supabase-js": "^2.119.0",
@@ -44,9 +44,9 @@
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
-    "@nestjs/cli": "^12.0.11",
+    "@nestjs/cli": "^12.0.12",
     "@nestjs/mau": "^0.2.9",
-    "@nestjs/schematics": "^12.0.12",
+    "@nestjs/schematics": "^12.0.13",
     "@types/express": "^5.0.6",
     "@types/node": "^26.6.6",
     "@types/passport-jwt": "^4.0.1",
