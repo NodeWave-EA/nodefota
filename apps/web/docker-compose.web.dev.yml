@@ -17,37 +17,33 @@ services:
     ports:
       - '5040:5040'
     volumes:
+      # Mount web directory to container app root
       - .:/app
-      - ./node_modules:/app/node_modules
-      - ../../node_modules:/node_modules
-      - ./.nuxt:/app/.nuxt
+      # Named volumes for dependencies and build outputs
+      - fota_web_dev_node_modules:/app/node_modules
+      - fota_web_dev_nuxt:/app/.nuxt
     networks:
       - fota_network
       - supabase_network
 
-    # Docker Compose Watch configuration
     develop:
       watch:
-        # Sync Nuxt app directory
+        # Sync changes across web directory for hot-reloading (ignoring build & dep folders)
         - action: sync
-          path: ./app
-          target: /app/app
-        # Sync static assets
-        - action: sync
-          path: ./public
-          target: /app/public
-        # Sync Nuxt server engine files
-        - action: sync
-          path: ./server
-          target: /app/server
-        # Sync Nuxt config
-        - action: sync
-          path: ./nuxt.config.ts
-          target: /app/nuxt.config.ts
-        # Restart container on environment variable updates
-        - action: restart
+          path: ./
+          target: /app
+          ignore:
+            - node_modules/
+            - .nuxt/
+            - .output/
+        # Restart container on env variable updates
+        - action: sync+restart
           path: .env
-        # Rebuild container image if dependencies change
+          target: /app/.env
+        - action: sync+restart
+          path: .env.supabase
+          target: /app/.env.supabase
+        # Rebuild container image when package dependencies update
         - action: rebuild
           path: package.json
 
@@ -58,3 +54,9 @@ networks:
   supabase_network:
     external: true
     name: supabase_default
+
+volumes:
+  fota_web_dev_node_modules:
+    name: fota_web_dev_node_modules
+  fota_web_dev_nuxt:
+    name: fota_web_dev_nuxt

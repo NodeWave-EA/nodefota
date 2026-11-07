@@ -1,22 +1,41 @@
-FROM oven/bun:1 AS build
+# --- Stage 1: Build ---
+FROM node:26-slim AS builder
 
 WORKDIR /app
 
+# Install Bun globally for package management
+RUN npm install -g bun
+
+# Copy web app package manifest
 COPY package.json ./
 
-RUN bun install --no-save
+# Install dependencies required for building
+RUN bun install
 
+# Copy application source code
 COPY . .
 
+# Build Nuxt standalone production output (.output)
 RUN bun run build
 
-FROM oven/bun:1-slim AS runtime
+# --- Stage 2: Production Runtime ---
+FROM node:26-slim AS runtime
 
 WORKDIR /app
 
-COPY --from=build /app/.output ./.output
+ENV NODE_ENV=production \
+    NUXT_HOST=0.0.0.0 \
+    NUXT_PORT=5040
 
-ENV NODE_ENV=production
-EXPOSE 3000
+# Copy compiled Nitro server bundle from builder stage
+COPY --from=builder /app/.output ./.output
 
-CMD ["bun", ".output/server/index.mjs"]
+# Assign non-root recursive ownership to node user (UID/GID 1000)
+RUN chown -R node:node /app
+
+USER node
+
+EXPOSE 5040
+
+# Launch standalone Nitro server using Node 26 runtime
+CMD ["node", ".output/server/index.mjs"]

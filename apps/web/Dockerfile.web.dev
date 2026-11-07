@@ -1,13 +1,26 @@
-FROM oven/bun:1
+FROM node:26-slim
+
+# Install Bun globally for package management
+RUN npm install -g bun
 
 WORKDIR /app
 
+# Copy web app package manifest
 COPY package.json ./
 
-RUN bun install --no-save
+# Install dependencies inside container node_modules
+RUN bun install
 
+# Copy web app source files
 COPY . .
 
-EXPOSE 3000
+# Create target directories and grant recursive 1000:1000 ownership to all files
+RUN mkdir -p /app/.nuxt /app/node_modules \
+    && chown -R 1000:1000 /app
 
-CMD ["bun", "run", "dev", "--", "--host", "0.0.0.0"]
+# Add node_modules/.bin to PATH
+ENV PATH="/app/node_modules/.bin:${PATH}"
+
+EXPOSE 5040
+
+CMD ["npx", "nuxt", "dev", "--host", "0.0.0.0", "--port", "5040"]

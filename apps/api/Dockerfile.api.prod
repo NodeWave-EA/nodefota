@@ -1,26 +1,48 @@
-FROM oven/bun:1 AS build
+# --- Stage 1: Build ---
+FROM node:26-slim AS builder
 
 WORKDIR /app
 
+# Install Bun globally for fast dependency management
+RUN npm install -g bun
+
+# Copy package manifest
 COPY package.json ./
 
-RUN bun install --no-save
+# Install all dependencies required for building
+RUN bun install
 
+# Copy application source code and Prisma schema
 COPY . .
 
-RUN bun run prisma:generate && bun run build
+# Generate Prisma Client and compile NestJS application
+RUN if [ -d "prisma" ]; then bunx prisma generate || true; fi \
+    && bun run build
 
-FROM oven/bun:1-slim AS runtime
+# --- Stage 2: Production Runtime ---
+FROM node:26-slim AS runtime
 
 WORKDIR /app
 
-COPY --from=build /app/package.json ./
-
-RUN bun install --no-save --production
-
-COPY --from=build /app/dist ./dist
+# Install Bun globally for production dependency installation
+RUN npm install -g bun
 
 ENV NODE_ENV=production
+
+# Copy package manifest and install production-only dependencies
+COPY package.json ./
+RUN bun install --production
+
+# Copy compiled application code and Prisma binaries from builder stage
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
+
+# Assign recursive non-root ownership to node user (UID/GID 1000)
+RUN chown -R node:node /app
+
+USER node
+
 EXPOSE 5050
 
-CMD ["bun", "run", "prod"]
+CMD ["node", "dist/main.js"]
