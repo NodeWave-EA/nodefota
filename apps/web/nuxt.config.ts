@@ -1,18 +1,211 @@
+import process from 'node:process'
+
 /** https://nuxt.com/docs/api/configuration/nuxt-config */
 export default defineNuxtConfig({
   modules: [
     '@nuxt/ui',
+    '@nuxt/fonts',
+    '@pinia/nuxt',
+    '@vueuse/nuxt/module',
+    '@nuxt/image',
+    '@nuxtjs/seo',
+    '@nuxt/icon/module',
+    '@nuxt/hints',
+    '@nuxt/a11y',
+    '@nuxt/scripts',
+    '@nuxtjs/turnstile',
   ],
 
   devtools: {
     enabled: true,
   },
 
-  css: ['~/assets/css/main.css'],
+  app: {
+    head: {
+      titleTemplate: '%s - Secure IoT FOTA Platform',
+      title: 'NODEFOTA - Zero-Trust Over-The-Air Firmware Management',
+      htmlAttrs: {
+        lang: 'en',
+      },
+      meta: [
+        {
+          name: 'description',
+          content: 'Enterprise-grade wireless firmware updates, cryptographic differential patching, and dual-bank rollback safety for millions of IoT devices.',
+        },
+        { name: 'theme-color', content: '#02192b' },
+        { name: 'msapplication-TileColor', content: '#02192b' },
+        { name: 'msapplication-TileImage', content: '/icons/favicon-144x144.png' },
+        { name: 'msapplication-config', content: '/icons/browserconfig.xml' },
+        { name: 'application-name', content: 'NODEFOTA' },
+        { name: 'apple-mobile-web-app-title', content: 'NODEFOTA' },
+      ],
+      link: [
+        // Legacy & SVG Favicons
+        { rel: 'icon', type: 'image/x-icon', href: '/icons/favicon.ico' },
+        { rel: 'shortcut icon', href: '/icons/favicon.ico' },
+        { rel: 'icon', type: 'image/svg+xml', href: '/icons/favicon.svg' },
 
-  routeRules: {
-    '/': { prerender: true },
+        // Standard PNG Favicons
+        {
+          rel: 'icon',
+          type: 'image/png',
+          sizes: '16x16',
+          href: '/icons/favicon-16x16.png',
+        },
+        {
+          rel: 'icon',
+          type: 'image/png',
+          sizes: '32x32',
+          href: '/icons/favicon-32x32.png',
+        },
+        {
+          rel: 'icon',
+          type: 'image/png',
+          sizes: '96x96',
+          href: '/icons/favicon-96x96.png',
+        },
+        {
+          rel: 'icon',
+          type: 'image/png',
+          sizes: '192x192',
+          href: '/icons/favicon-192x192.png',
+        },
+
+        { rel: 'apple-touch-icon', sizes: '57x57', href: '/icons/favicon-57x57.png' },
+        { rel: 'apple-touch-icon', sizes: '60x60', href: '/icons/favicon-60x60.png' },
+        { rel: 'apple-touch-icon', sizes: '72x72', href: '/icons/favicon-72x72.png' },
+        { rel: 'apple-touch-icon', sizes: '76x76', href: '/icons/favicon-76x76.png' },
+        { rel: 'apple-touch-icon', sizes: '114x114', href: '/icons/favicon-114x114.png' },
+        { rel: 'apple-touch-icon', sizes: '120x120', href: '/icons/favicon-120x120.png' },
+        { rel: 'apple-touch-icon', sizes: '144x144', href: '/icons/favicon-144x144.png' },
+        { rel: 'apple-touch-icon', sizes: '152x152', href: '/icons/favicon-152x152.png' },
+        { rel: 'apple-touch-icon', sizes: '180x180', href: '/icons/favicon-180x180.png' },
+
+        { rel: 'manifest', href: '/icons/manifest.json' },
+      ],
+    },
+    pageTransition: {
+      name: 'page',
+      mode: 'out-in',
+    },
+    layoutTransition: {
+      name: 'layout',
+      mode: 'out-in',
+    },
   },
 
+  css: ['~/assets/css/main.css'],
+
   compatibilityDate: '2026-06-30',
+
+  site: {
+    name: 'NODEFOTA',
+    url: process.env.NUXT_PUBLIC_SITE_URL,
+    description: 'Secure firmware over-the-air updates for IoT devices. Manage ESP32/ESP8266 fleets with confidence.',
+    defaultLocale: 'en',
+    trailingSlash: false,
+  },
+
+  colorMode: {
+    preference: 'system',
+    fallback: 'dark',
+    classSuffix: '',
+  },
+
+  runtimeConfig: {
+    public: {
+      turnstileSiteKey: process.env.NUXT_PUBLIC_TURNSTILE_SITE_KEY,
+      apiBaseUrl: process.env.NUXT_PUBLIC_API_URL,
+    },
+  },
+
+  nitro: {
+    compressPublicAssets: true,
+  },
+
+  image: {
+    quality: 80,
+    format: ['webp', 'avif'],
+    screens: {
+      xs: 320,
+      sm: 640,
+      md: 768,
+      lg: 1024,
+      xl: 1280,
+      xxl: 1536,
+    },
+  },
+
+  icon: {
+    class: 'nuxt-icon',
+    size: '1.2em',
+    serverBundle: 'auto',
+  },
+
+  ui: {
+    experimental: {
+      componentDetection: true,
+    },
+  },
+
+  fonts: {
+    defaults: {
+      weights: [400, 500, 700],
+      styles: ['normal', 'italic'],
+      subsets: ['latin'],
+    },
+    families: [
+      {
+        name: 'Inter',
+        weights: [300, 400, 500, 600, 700, 800, 900],
+      },
+      {
+        name: 'Roboto',
+        weights: [300, 400, 500, 700, 900],
+      },
+      {
+        name: 'IBM Plex Sans',
+        weights: [300, 400, 500, 600, 700],
+      },
+      {
+        name: 'Playfair Display',
+        weights: [400, 700, 900],
+      },
+      {
+        name: 'EB Garamond',
+        weights: [400, 500, 700],
+      },
+      {
+        name: 'Lora',
+        weights: [400, 500, 600, 700],
+      },
+      {
+        name: 'JetBrains Mono',
+        weights: [400, 500, 700],
+      },
+      {
+        name: 'IBM Plex Mono',
+        weights: [300, 400, 500, 600],
+      },
+      {
+        name: 'Special Elite',
+        weights: [400],
+      },
+    ],
+  },
+
+  experimental: {
+    payloadExtraction: true,
+    viewTransition: true,
+    defaults: {
+      nuxtLink: {
+        trailingSlash: 'remove',
+        prefetch: true,
+      },
+    },
+  },
+
+  turnstile: {
+    siteKey: process.env.NUXT_PUBLIC_TURNSTILE_SITE_KEY,
+  },
 })
