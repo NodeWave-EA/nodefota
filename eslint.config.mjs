@@ -19,4 +19,8 @@ export default antfu({
       { argsIgnorePattern: '^_' },
     ],
   },
+}, {
+  ignores: [
+    '**/browserconfig.*',
+  ],
 })
