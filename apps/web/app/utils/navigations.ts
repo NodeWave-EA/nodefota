@@ -16,7 +16,9 @@ export const HEADER_NAVIGATION = ref<NavigationMenuItem[]>([
   {
     label: 'Blog',
     icon: 'i-line-md-text-box-multiple-twotone',
-    to: '/blog',
+    to: 'https://blog.nodewave.net',
+    external: true,
+    target: '_blank',
   },
   {
     label: 'Support',
@@ -42,6 +44,7 @@ export const FOOTER_NAVIGATION = ref<NavigationMenuItem[]>([
 
 export const FOOTER_SOCIALS = ref<ButtonProps[]>([
   {
+    label: 'Twitter X',
     icon: 'i-line-md-twitter-x',
     color: 'neutral',
     variant: 'ghost',
@@ -49,6 +52,7 @@ export const FOOTER_SOCIALS = ref<ButtonProps[]>([
     target: '_blank',
   },
   {
+    label: 'TikTok',
     icon: 'i-line-md-tiktok',
     color: 'neutral',
     variant: 'ghost',
@@ -56,6 +60,7 @@ export const FOOTER_SOCIALS = ref<ButtonProps[]>([
     target: '_blank',
   },
   {
+    label: 'LinkedIn',
     icon: 'i-line-md-linkedin',
     color: 'neutral',
     variant: 'ghost',
