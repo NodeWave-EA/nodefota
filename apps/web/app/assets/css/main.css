@@ -1,9 +1,45 @@
 @import 'tailwindcss';
 @import '@nuxt/ui';
 
-@theme static {
-  --font-sans: 'Public Sans', sans-serif;
+/* ==========================================================================
+   TYPOGRAPHY THEME
+   ========================================================================== */
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+}
 
+/* ==========================================================================
+   COLOR PALETTES & ANIMATIONS
+   ========================================================================== */
+@theme static {
+  /* Cobalt Brand Palette */
+  --color-cobalt-50: oklch(95.3% 0.022 260.723);
+  --color-cobalt-100: oklch(90.8% 0.045 258.763);
+  --color-cobalt-200: oklch(81.6% 0.091 257.776);
+  --color-cobalt-300: oklch(72.9% 0.14 258.068);
+  --color-cobalt-400: oklch(64.7% 0.186 258.256);
+  --color-cobalt-500: oklch(57.8% 0.228 260.025);
+  --color-cobalt-600: oklch(49.2% 0.19 259.799);
+  --color-cobalt-700: oklch(40.2% 0.152 259.656);
+  --color-cobalt-800: oklch(30.7% 0.109 258.934);
+  --color-cobalt-900: oklch(20.4% 0.063 257.52);
+  --color-cobalt-950: oklch(14.7% 0.037 249.929);
+
+  /* Cobalt Neutral Gray Palette */
+  --color-cobalt-gray-50: oklch(99.1% 0 0);
+  --color-cobalt-gray-100: oklch(98.2% 0.002 247.839);
+  --color-cobalt-gray-200: oklch(94.2% 0.005 247.879);
+  --color-cobalt-gray-300: oklch(91.1% 0.007 247.901);
+  --color-cobalt-gray-400: oklch(86.7% 0.011 247.949);
+  --color-cobalt-gray-500: oklch(76.9% 0.015 248.017);
+  --color-cobalt-gray-600: oklch(55.8% 0.016 244.893);
+  --color-cobalt-gray-700: oklch(42.8% 0.015 248.172);
+  --color-cobalt-gray-800: oklch(34.5% 0.013 248.212);
+  --color-cobalt-gray-900: oklch(26.2% 0.009 248.19);
+  --color-cobalt-gray-950: oklch(20.7% 0.008 248.192);
+
+  /* Status Colors */
   --color-green-50: #effdf5;
   --color-green-100: #d9fbe8;
   --color-green-200: #b3f5d1;
@@ -15,4 +51,126 @@
   --color-green-800: #016538;
   --color-green-900: #0a5331;
   --color-green-950: #052e16;
+
+  --color-brand-50: #f0f9ff;
+  --color-brand-100: #e0f2fe;
+  --color-brand-200: #bae6fd;
+  --color-brand-300: #7dd3fc;
+  --color-brand-400: #38bdf8;
+  --color-brand-500: #3b82f6;
+  --color-brand-600: #2563eb;
+  --color-brand-700: #1d4ed8;
+  --color-brand-800: #1e40af;
+  --color-brand-900: #1e3a8a;
+  --color-brand-950: #172554;
+
+  --color-teal-50: #f0fdfa;
+  --color-teal-100: #ccfbf1;
+  --color-teal-200: #99f6e4;
+  --color-teal-300: #5eead4;
+  --color-teal-400: #2dd4bf;
+  --color-teal-500: #14b8a6;
+  --color-teal-600: #0d9488;
+  --color-teal-700: #0f766e;
+  --color-teal-800: #115e59;
+  --color-teal-900: #134e4a;
+  --color-teal-950: #042f2e;
+
+  /* Keyframe Animations */
+  --animate-fade-in: fade-in 0.5s ease-out both;
+  --animate-fade-in-up: fade-in-up 0.6s ease-out both;
+  --animate-fade-in-down: fade-in-down 0.5s ease-out both;
+  --animate-slide-in-left: slide-in-left 0.5s ease-out both;
+  --animate-slide-in-right: slide-in-right 0.5s ease-out both;
+  --animate-scale-in: scale-in 0.4s ease-out both;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-pulse-soft: pulse-soft 3s ease-in-out infinite;
+  --animate-shimmer: shimmer 2s ease-in-out infinite;
+  --animate-gradient: gradient-shift 8s ease infinite;
+  --animate-count-up: count-up 1s ease-out both;
+  --animate-glow: glow 2s ease-in-out infinite alternate;
+}
+
+/* ==========================================================================
+   BASE STYLES
+   ========================================================================== */
+@layer base {
+  html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+    font-family: var(--font-sans), system-ui;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* ==========================================================================
+   5. NUXT UI THEME VARIABLES
+   ========================================================================== */
+:root {
+  --ui-radius: 0.625rem;
+}
+
+:root,
+.light {
+  --ui-bg: var(--ui-color-neutral-100);
+  --ui-bg-muted: var(--ui-color-neutral-100);
+  --ui-text-inverted: var(--ui-color-neutral-50);
+  --ui-primary: var(--ui-color-primary-600);
+
+  /* Scrollbar Theme Tokens (Light Mode) */
+  --scrollbar-track: transparent;
+  --scrollbar-thumb: rgba(15, 23, 42, 0.2);
+  --scrollbar-thumb-hover: rgba(15, 23, 42, 0.4);
+}
+
+.dark {
+  --ui-text-highlighted: var(--ui-color-neutral-50);
+  --ui-bg-inverted: var(--ui-color-neutral-50);
+  --ui-border-inverted: var(--ui-color-neutral-50);
+  --ui-bg: var(--ui-color-neutral-900);
+  --ui-bg-muted: var(--ui-color-neutral-800);
+  --ui-text-inverted: var(--ui-color-neutral-900);
+  --ui-primary: var(--ui-color-primary-400);
+
+  /* Scrollbar Theme Tokens (Dark Mode) */
+  --scrollbar-track: transparent;
+  --scrollbar-thumb: rgba(255, 255, 255, 0.2);
+  --scrollbar-thumb-hover: rgba(255, 255, 255, 0.4);
+}
+
+/* ==========================================================================
+   SCROLLBAR (GLOBAL & CHILDREN)
+   ========================================================================== */
+/* Standard W3C / Firefox implementation */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+}
+
+/* WebKit implementation (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb);
+  border-radius: 9999px;
+  border: 1.5px solid transparent;
+  background-clip: padding-box;
+  transition: background-color 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbar-thumb-hover);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
 }

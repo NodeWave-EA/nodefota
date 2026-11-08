@@ -115,6 +115,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       turnstileSiteKey: process.env.NUXT_PUBLIC_TURNSTILE_SITE_KEY,
+      siteUrl: process.env.NUXT_PUBLIC_SITE_URL,
       apiBaseUrl: process.env.NUXT_PUBLIC_API_URL,
     },
   },
@@ -150,49 +151,23 @@ export default defineNuxtConfig({
 
   fonts: {
     defaults: {
-      weights: [400, 500, 700],
-      styles: ['normal', 'italic'],
+      weights: [400, 500, 600, 700],
+      styles: ['normal'],
       subsets: ['latin'],
     },
     families: [
       {
         name: 'Inter',
-        weights: [300, 400, 500, 600, 700, 800, 900],
-      },
-      {
-        name: 'Roboto',
-        weights: [300, 400, 500, 700, 900],
-      },
-      {
-        name: 'IBM Plex Sans',
-        weights: [300, 400, 500, 600, 700],
-      },
-      {
-        name: 'Playfair Display',
-        weights: [400, 700, 900],
-      },
-      {
-        name: 'EB Garamond',
-        weights: [400, 500, 700],
-      },
-      {
-        name: 'Lora',
         weights: [400, 500, 600, 700],
       },
       {
         name: 'JetBrains Mono',
-        weights: [400, 500, 700],
-      },
-      {
-        name: 'IBM Plex Mono',
-        weights: [300, 400, 500, 600],
-      },
-      {
-        name: 'Special Elite',
-        weights: [400],
+        weights: [400, 500, 600, 700],
       },
     ],
   },
+
+  aiReady: {},
 
   experimental: {
     payloadExtraction: true,
