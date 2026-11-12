@@ -1,89 +1,178 @@
 <script setup lang="ts">
-import { breakpointsTailwind, useBreakpoints, useColorMode } from '@vueuse/core'
-import { computed } from 'vue'
-import { GITHUB_REPO, HEADER_NAVIGATION } from '~/utils/navigations.ts'
+import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
+import { computed, ref, watch } from 'vue'
+import { GITHUB_REPO, HEADER_NAVIGATION } from '~/utils/navigations'
 
 defineOptions({
   name: 'AppHeader',
 })
 
+const route = useRoute()
 const breakpoints = useBreakpoints(breakpointsTailwind)
-const colorMode = useColorMode()
 
-// Define responsive conditions
+type HeaderMenuMode = 'modal' | 'slideover' | 'drawer'
+
 const isMobile = breakpoints.smaller('sm')
 const isTablet = breakpoints.between('sm', 'lg')
 
-type UHeaderModes = 'modal' | 'slideover' | 'drawer'
+const isMenuOpen = ref(false)
 
-// Dynamically determine the mode based on the screen width
-const currentMode = computed<UHeaderModes>(() => {
+const currentMode = computed<HeaderMenuMode>(() => {
   if (isMobile.value) {
     return 'drawer'
   }
   if (isTablet.value) {
     return 'slideover'
   }
-  return 'modal' // Default fallback mode for desktop layouts
+  return 'modal'
 })
+
+watch(
+  () => route.fullPath,
+  () => {
+    isMenuOpen.value = false
+  },
+)
+
+const authActions = {
+  signIn: {
+    label: 'Sign In',
+    to: '/login',
+  },
+  getStarted: {
+    label: 'Get Started',
+    to: '/register',
+    icon: 'i-lucide-arrow-right',
+  },
+}
 </script>
 
 <template>
-  <UHeader :mode="currentMode">
+  <UHeader
+    v-model:open="isMenuOpen"
+    :mode="currentMode"
+    :ui="{
+      root: 'border-b border-default bg-default/90 backdrop-blur-md',
+      toggle: 'rounded-xs',
+    }"
+  >
     <template #title>
-      <ClientOnly>
+      <NuxtLink
+        to="/"
+        aria-label="NodeFOTA Home"
+        class="inline-flex items-center rounded-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+      >
         <AppLogo
-          :color="colorMode"
-          class="h-12 w-auto"
+          :width="124"
+          :height="50"
+          title="NodeFOTA - Secure FOTA Platform"
         />
-      </ClientOnly>
+      </NuxtLink>
     </template>
 
-    <!-- Desktop Navigation -->
     <template #default>
       <UNavigationMenu
         highlight
         highlight-color="primary"
         :items="HEADER_NAVIGATION"
         orientation="horizontal"
-        variant="pill"
+        variant="link"
+        aria-label="Primary navigation"
         :ui="{
-          root: 'justify-around border-t border-default py-2',
-          item: 'py-0',
-          link: 'flex-col gap-1 px-3',
-          linkLeadingIcon: 'size-5',
-          linkLabel: 'text-[10px]/3 font-normal',
+          root: 'justify-center',
+          list: 'gap-1',
+          link: 'rounded-xs px-3 py-2 font-sans text-sm font-medium transition-colors',
+          linkLeadingIcon: 'size-4',
+          linkLabel: 'whitespace-nowrap',
         }"
-        class="w-full"
-      />
-    </template>
-
-    <!-- Mobile Navigation -->
-    <template #body>
-      <UNavigationMenu
-        highlight
-        highlight-color="primary"
-        :items="HEADER_NAVIGATION"
-        orientation="vertical"
-        variant="pill"
       />
     </template>
 
     <template #right>
-      <AppThemeToggle />
+      <div class="flex items-center gap-1.5 sm:gap-2">
+        <AppThemeToggle />
 
-      <UTooltip text="Open on GitHub" :kbds="['meta', 'G']">
+        <UTooltip arrow text="GitHub Repository">
+          <UButton
+            v-bind="GITHUB_REPO"
+            color="neutral"
+            variant="ghost"
+            size="sm"
+            aria-label="GitHub Repository"
+            rel="noopener noreferrer"
+            class="rounded-xs"
+          />
+        </UTooltip>
+
+        <span
+          aria-hidden="true"
+          class="hidden h-4 w-px bg-border lg:inline-block"
+        />
+
         <UButton
+          :to="authActions.signIn.to"
           color="neutral"
           variant="ghost"
-          v-bind="GITHUB_REPO"
-          aria-label="GitHub"
+          size="sm"
+          class="hidden whitespace-nowrap rounded-xs font-sans text-xs font-semibold lg:inline-flex"
+        >
+          {{ authActions.signIn.label }}
+        </UButton>
+
+        <UButton
+          :to="authActions.getStarted.to"
+          color="primary"
+          variant="solid"
+          size="sm"
+          :trailing-icon="authActions.getStarted.icon"
+          class="hidden whitespace-nowrap rounded-xs font-sans text-xs font-semibold lg:inline-flex"
+        >
+          {{ authActions.getStarted.label }}
+        </UButton>
+      </div>
+    </template>
+
+    <template #body>
+      <div class="flex flex-col gap-6">
+        <UNavigationMenu
+          highlight
+          highlight-color="primary"
+          :items="HEADER_NAVIGATION"
+          orientation="vertical"
+          variant="pill"
+          aria-label="Mobile navigation"
+          :ui="{
+            list: 'gap-1',
+            link: 'rounded-xs px-3 py-2.5 font-sans text-sm font-medium',
+            linkLeadingIcon: 'size-4',
+          }"
         />
-      </UTooltip>
+
+        <div class="grid grid-cols-1 gap-2 border-t border-default pt-4 sm:grid-cols-2">
+          <UButton
+            :to="authActions.signIn.to"
+            color="neutral"
+            variant="outline"
+            size="md"
+            block
+            class="rounded-xs font-sans text-sm font-semibold"
+          >
+            {{ authActions.signIn.label }}
+          </UButton>
+
+          <UButton
+            :to="authActions.getStarted.to"
+            color="primary"
+            variant="solid"
+            size="md"
+            block
+            :trailing-icon="authActions.getStarted.icon"
+            class="rounded-xs font-sans text-sm font-semibold"
+          >
+            {{ authActions.getStarted.label }}
+          </UButton>
+        </div>
+      </div>
     </template>
   </UHeader>
 </template>
-
-<style scoped>
-
-</style>

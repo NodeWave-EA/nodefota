@@ -1,30 +1,42 @@
 import type { ButtonProps, NavigationMenuItem } from '@nuxt/ui'
-
 import type { NuxtLinkProps } from '#app'
 
 export const HEADER_NAVIGATION = ref<NavigationMenuItem[]>([
   {
     label: 'Home',
-    icon: 'i-line-md-home-simple-twotone',
+    icon: 'i-lucide-home',
     to: '/',
   },
   {
-    label: 'Docs',
-    icon: 'i-tabler-book-filled',
-    to: '/docs',
+    label: 'Features',
+    icon: 'i-lucide-layers',
+    to: '/features',
   },
   {
-    label: 'Blog',
-    icon: 'i-line-md-text-box-multiple-twotone',
-    to: 'https://blog.nodewave.net',
-    external: true,
-    target: '_blank',
+    label: 'Security',
+    icon: 'i-lucide-shield-check',
+    to: '/security',
   },
   {
-    label: 'Support',
-    icon: 'i-tabler-lifebuoy',
-    to: '/support',
+    label: 'Integrations',
+    icon: 'i-lucide-plug',
+    to: '/integrations',
   },
+  {
+    label: 'About',
+    icon: 'i-lucide-info',
+    to: '/about',
+  },
+  // {
+  //   label: 'Contact',
+  //   icon: 'i-lucide-lifebuoy',
+  //   to: '/contact',
+  // },
+  // {
+  //   label: 'Docs',
+  //   icon: 'i-lucide-book-open',
+  //   to: '/docs',
+  // },
 ])
 
 export const FOOTER_NAVIGATION = ref<NavigationMenuItem[]>([
@@ -78,6 +90,13 @@ export const COMPANY = ref<NuxtLinkProps>({
 export const GITHUB_REPO = ref<ButtonProps>({
   to: 'https://github.com/nodewave-ea',
   icon: 'i-line-md-github-twotone-loop',
+  external: true,
+  target: '_blank',
+})
+
+export const BLOG = ref<ButtonProps>({
+  to: 'https://blog.nodewave.net',
+  icon: 'i-line-md-blog',
   external: true,
   target: '_blank',
 })
