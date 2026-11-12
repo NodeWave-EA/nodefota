@@ -30,7 +30,8 @@
     "build": "bun --filter '*' --parallel --output-style grouped build",
     "build:web": "bun --filter '@fota/web' build",
     "build:api": "bun --filter '@fota/api' build",
-    "lint": "eslint . --fix",
+    "lint": "eslint . --fix --cache --cache-location ./node_modules/.cache/eslint",
+    "lint:verbose": "DEBUG=eslint:* eslint . --fix --cache --cache-location ./node_modules/.cache/eslint",
     "typecheck": "bun --filter '*' --parallel --output-style grouped typecheck",
     "prepare": "husky"
   },

@@ -13,10 +13,17 @@ export default antfu({
   rules: {
     'no-console': 'off',
     'ts/consistent-type-imports': 'off',
-    '@typescript-eslint/no-explicit-any': 'off',
-    '@typescript-eslint/no-unused-vars': [
+    'ts/no-unused-vars': 'off',
+    'unused-imports/no-unused-vars': [
       'warn',
-      { argsIgnorePattern: '^_' },
+      {
+        vars: 'all',
+        varsIgnorePattern: '^_',
+        args: 'after-used',
+        argsIgnorePattern: '^_',
+        caughtErrors: 'all',
+        caughtErrorsIgnorePattern: '^_',
+      },
     ],
   },
 }, {

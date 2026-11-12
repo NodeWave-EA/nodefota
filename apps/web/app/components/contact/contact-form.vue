@@ -70,7 +70,7 @@ async function handleSubmit() {
     await new Promise(resolve => setTimeout(resolve, 1200))
     isSuccess.value = true
   }
-  catch (err) {
+  catch (_err) {
     submitError.value = 'We couldn\'t send your message. Something went wrong while submitting your enquiry. Please try again or contact us via info@nodewave.net.'
   }
   finally {

@@ -1,0 +1,63 @@
+{
+  // Disable VS Code's native formatters so they never fight ESLint on Ctrl+S
+  "prettier.enable": false,
+  "editor.formatOnSave": false,
+
+  // Let ESLint handle all formatting and auto-fixes on save
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "never"
+  },
+
+  // Enable ESLint as the formatter for manual Format Document (Shift+Alt+F)
+  "eslint.format.enable": true,
+  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+
+  // Validate all file types supported by your @antfu/eslint-config
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "vue",
+    "html",
+    "markdown",
+    "json",
+    "jsonc",
+    "yaml",
+    "toml",
+    "xml",
+    "gql",
+    "graphql",
+    "astro",
+    "svelte",
+    "css",
+    "less",
+    "scss",
+    "pcss",
+    "postcss"
+  ],
+
+  // Performance & caching
+  "eslint.run": "onSave",
+  "eslint.lintTask.enable": true,
+  "eslint.codeActionsOnSave.mode": "all",
+  "eslint.options": {
+    "cache": true,
+    "cacheLocation": "./node_modules/.cache/eslint"
+  }
+
+  // Prevent ESLint from deleting unused imports while you are still typing
+  // "eslint.rules.customizations": [
+  //   { "rule": "style/*", "severity": "off", "fixable": true },
+  //   { "rule": "format/*", "severity": "off", "fixable": true },
+  //   { "rule": "*-indent", "severity": "off", "fixable": true },
+  //   { "rule": "*-spacing", "severity": "off", "fixable": true },
+  //   { "rule": "*-spaces", "severity": "off", "fixable": true },
+  //   { "rule": "*-order", "severity": "off", "fixable": true },
+  //   { "rule": "*-dangle", "severity": "off", "fixable": true },
+  //   { "rule": "*-newline", "severity": "off", "fixable": true },
+  //   { "rule": "*quotes", "severity": "off", "fixable": true },
+  //   { "rule": "*semi", "severity": "off", "fixable": true }
+  // ]
+}
