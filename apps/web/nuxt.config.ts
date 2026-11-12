@@ -167,7 +167,9 @@ export default defineNuxtConfig({
     ],
   },
 
-  aiReady: {},
+  aiReady: {
+    autoI18n: true,
+  },
 
   experimental: {
     payloadExtraction: true,
@@ -178,6 +180,72 @@ export default defineNuxtConfig({
         prefetch: true,
       },
     },
+  },
+
+  nuxtseo: {
+    enabled: true,
+    tips: true,
+  },
+
+  robots: {
+    enabled: true,
+    debug: process.env.NODE_ENV !== 'production',
+    header: true,
+    metaTag: true,
+    groups: [
+      {
+        userAgent: '*',
+        allow: ['/'],
+        contentUsage: {
+          'bots': 'y',
+          'train-ai': 'y',
+          'ai-output': 'y',
+          'search': 'y',
+        },
+        contentSignal: {
+          'search': 'yes',
+          'ai-input': 'yes',
+          'ai-train': 'yes',
+        },
+      },
+    ],
+  },
+
+  schemaOrg: {
+    enabled: true,
+    defaults: true,
+    minify: process.env.NODE_ENV === 'production',
+  },
+
+  seo: {
+    enabled: true,
+    automaticDefaults: true,
+    automaticOgAndTwitterTags: true,
+    automaticTwitterTags: true,
+    canonicalLowercase: true,
+    canonicalQueryWhitelist: [],
+    redirectToCanonicalSiteUrl: true,
+    meta: {
+      ogLocale: 'en_KE',
+      twitterCard: 'summary_large_image',
+    },
+  },
+
+  sitemap: {
+    enabled: true,
+    zeroRuntime: true,
+    autoI18n: true,
+    discoverImages: true,
+    discoverVideos: true,
+    sitemapName: 'sitemap.xml',
+    defaults: {
+      changefreq: 'weekly',
+      priority: 0.7,
+    },
+  },
+
+  skewProtection: {
+    enabled: true,
   },
 
   turnstile: {
