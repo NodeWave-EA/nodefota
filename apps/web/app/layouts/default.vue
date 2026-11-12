@@ -8,7 +8,9 @@
     </ClientOnly>
 
     <UMain class="flex-1">
-      <slot />
+      <UContainer>
+        <slot />
+      </UContainer>
     </UMain>
 
     <ClientOnly>
