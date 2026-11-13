@@ -14,6 +14,7 @@ export default defineNuxtConfig({
     '@nuxt/a11y',
     '@nuxt/scripts',
     '@nuxtjs/turnstile',
+    '@nuxtjs/mcp-toolkit',
   ],
 
   devtools: {
@@ -113,6 +114,8 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
+    indexNowKey: process.env.NUXT_INDEX_NOW_KEY,
+    indexNowSiteUrl: process.env.NUXT_PUBLIC_SITE_URL,
     public: {
       turnstileSiteKey: process.env.NUXT_PUBLIC_TURNSTILE_SITE_KEY,
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL,
@@ -168,7 +171,23 @@ export default defineNuxtConfig({
   },
 
   aiReady: {
+    database: {
+      type: process.env.NODE_ENV === 'production'
+        ? 'neon'
+        : 'sqlite',
+      url: process.env.NUXT_AI_READY_DATABASE_URL,
+    },
     autoI18n: true,
+    runtimeSync: {
+      ttl: 3600,
+      batchSize: 50,
+      pruneTtl: 0,
+    },
+    cron: true,
+  },
+
+  mcp: {
+    enabled: true,
   },
 
   experimental: {

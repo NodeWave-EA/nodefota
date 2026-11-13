@@ -170,3 +170,6 @@ keys.json
 **/generated/
 
 **/test
+**/.github/skills/**
+**/.skills/**
+AGENTS.md
