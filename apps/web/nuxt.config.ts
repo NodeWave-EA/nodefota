@@ -190,6 +190,11 @@ export default defineNuxtConfig({
     enabled: true,
   },
 
+  prerender: {
+    crawlLinks: true,
+    routes: ['/sitemap.xml', '/robots.txt'],
+  },
+
   experimental: {
     payloadExtraction: true,
     viewTransition: true,
