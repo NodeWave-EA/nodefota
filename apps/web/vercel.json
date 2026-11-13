@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/__ai-ready/poll",
-      "schedule": "0 * * * *"
+      "schedule": "0 0 * * *"
     }
   ]
 }
