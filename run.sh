@@ -44,6 +44,56 @@ link_if_present() {
   fi
 }
 
+link_supabase_env() {
+  _mode="$1" # development | production
+
+  # 1. Link docker/supabase/.env -> .env.<mode> if profile file exists; keep existing .env otherwise
+  if [ -e "docker/supabase/.env.${_mode}" ]; then
+    link_if_present "docker/supabase/.env.${_mode}" "docker/supabase/.env"
+  elif [ ! -e "docker/supabase/.env" ]; then
+    echo "  ⚠ Warning: neither docker/supabase/.env.${_mode} nor docker/supabase/.env exists." >&2
+  fi
+
+  # 2. Generate docker/supabase/.env.clients if .env exists and .env.clients is missing
+  if [ -e "docker/supabase/.env" ] && [ ! -e "docker/supabase/.env.clients" ] && [ -x "docker/supabase/nodewave/manage.sh" ]; then
+    ./docker/supabase/nodewave/manage.sh env --format all > "docker/supabase/.env.clients"
+    chmod 600 "docker/supabase/.env.clients" 2>/dev/null || true
+    echo "  ✓ Generated docker/supabase/.env.clients"
+  fi
+
+  # 3. Resolve best client credentials file (.env.clients.<mode> -> .env.clients -> .env.<mode> -> .env)
+  _clients_src=""
+  if [ -e "docker/supabase/.env.clients.${_mode}" ]; then
+    _clients_src="docker/supabase/.env.clients.${_mode}"
+  elif [ -e "docker/supabase/.env.clients" ]; then
+    _clients_src="docker/supabase/.env.clients"
+  elif [ -e "docker/supabase/.env.${_mode}" ]; then
+    _clients_src="docker/supabase/.env.${_mode}"
+  elif [ -e "docker/supabase/.env" ]; then
+    _clients_src="docker/supabase/.env"
+  fi
+
+  if [ -n "$_clients_src" ]; then
+    if [ "$_clients_src" != "docker/supabase/.env.clients" ]; then
+      if [ ! -e "docker/supabase/.env.clients" ] || [ -L "docker/supabase/.env.clients" ]; then
+        link_if_present "$_clients_src" "docker/supabase/.env.clients"
+      fi
+    fi
+    link_if_present "$_clients_src" "apps/web/.env.clients"
+    link_if_present "$_clients_src" "apps/api/.env.clients"
+  else
+    echo "  ⚠ Warning: no Supabase client env file found for apps/web/.env.clients and apps/api/.env.clients" >&2
+  fi
+
+  # Clean up legacy .env.supabase symlinks safely under set -e
+  if [ -L "apps/web/.env.supabase" ]; then
+    rm -f "apps/web/.env.supabase"
+  fi
+  if [ -L "apps/api/.env.supabase" ]; then
+    rm -f "apps/api/.env.supabase"
+  fi
+}
+
 switch_env() {
   sub="${1:-}"
   case "$sub" in
@@ -52,12 +102,16 @@ switch_env() {
       link_if_present docker-compose.dev.yml docker-compose.yml
       link_if_present apps/api/docker-compose.api.dev.yml apps/api/docker-compose.yml
       link_if_present apps/api/.env.development apps/api/.env
+      if [ ! -e "apps/api/.env" ]; then
+        echo "  ⚠ Warning: apps/api/.env.development not found (create it from apps/api/.env.example)" >&2
+      fi
       link_if_present apps/web/docker-compose.web.dev.yml apps/web/docker-compose.yml
       link_if_present apps/web/.env.development apps/web/.env
-      link_if_present docker/supabase/.env.development docker/supabase/.env
+      if [ ! -e "apps/web/.env" ]; then
+        echo "  ⚠ Warning: apps/web/.env.development not found (create it from apps/web/.env.example)" >&2
+      fi
       link_if_present docker/caddy/Caddyfile.dev docker/caddy/Caddyfile
-      link_if_present docker/supabase/.env.development apps/web/.env.supabase
-      link_if_present docker/supabase/.env.development apps/api/.env.supabase
+      link_supabase_env development
       echo "Successfully switched to DEVELOPMENT mode."
       ;;
     --prod | prod)
@@ -65,12 +119,16 @@ switch_env() {
       link_if_present docker-compose.prod.yml docker-compose.yml
       link_if_present apps/api/docker-compose.api.prod.yml apps/api/docker-compose.yml
       link_if_present apps/api/.env.production apps/api/.env
+      if [ ! -e "apps/api/.env" ]; then
+        echo "  ⚠ Warning: apps/api/.env.production not found (create it from apps/api/.env.example)" >&2
+      fi
       link_if_present apps/web/docker-compose.web.prod.yml apps/web/docker-compose.yml
       link_if_present apps/web/.env.production apps/web/.env
-      link_if_present docker/supabase/.env.production docker/supabase/.env
+      if [ ! -e "apps/web/.env" ]; then
+        echo "  ⚠ Warning: apps/web/.env.production not found (create it from apps/web/.env.example)" >&2
+      fi
       link_if_present docker/caddy/Caddyfile.prod docker/caddy/Caddyfile
-      link_if_present docker/supabase/.env.production apps/web/.env.supabase
-      link_if_present docker/supabase/.env.production apps/api/.env.supabase
+      link_supabase_env production
       echo "Successfully switched to PRODUCTION mode."
       ;;
     *)
