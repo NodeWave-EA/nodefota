@@ -5,7 +5,7 @@
 [submodule "docker/supabase"]
 	path = docker/supabase
 	url = https://github.com/NodeWave-EA/supabase-docker.git
-	branch = release/v0.8.3
+	branch = release/v0.8.5
 	update = checkout
 	ignore = dirty
 	fetchRecurseSubmodules = on-demand
