@@ -85,12 +85,12 @@ link_supabase_env() {
     echo "  ⚠ Warning: no Supabase client env file found for apps/web/.env.clients and apps/api/.env.clients" >&2
   fi
 
-  # Clean up legacy .env.supabase symlinks safely under set -e
-  if [ -L "apps/web/.env.supabase" ]; then
-    rm -f "apps/web/.env.supabase"
+  # Clean up legacy .env.clients symlinks safely under set -e
+  if [ -L "apps/web/.env.clients" ]; then
+    rm -f "apps/web/.env.clients"
   fi
-  if [ -L "apps/api/.env.supabase" ]; then
-    rm -f "apps/api/.env.supabase"
+  if [ -L "apps/api/.env.clients" ]; then
+    rm -f "apps/api/.env.clients"
   fi
 }
 

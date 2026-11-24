@@ -9,7 +9,7 @@ services:
     user: '${LOCAL_UID:-1000}:${LOCAL_GID:-1000}'
     env_file:
       - .env
-      - .env.supabase
+      - .env.clients
     environment:
       NODE_ENV: development
       PORT: 5050
@@ -39,8 +39,8 @@ services:
           path: .env
           target: /app/.env
         - action: sync+restart
-          path: .env.supabase
-          target: /app/.env.supabase
+          path: .env.clients
+          target: /app/.env.clients
         # Rebuild container image if dependencies change
         - action: rebuild
           path: package.json

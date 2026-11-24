@@ -10,7 +10,7 @@ services:
     user: '${LOCAL_UID:-1000}:${LOCAL_GID:-1000}'
     env_file:
       - .env
-      - .env.supabase
+      - .env.clients
     environment:
       NODE_ENV: production
       PORT: 5050
