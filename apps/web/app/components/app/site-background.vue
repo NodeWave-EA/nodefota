@@ -14,7 +14,7 @@ const props = withDefaults(defineProps<Props>(), {
 
 interface Props {
   /**
-   * Opacity multiplier for the technical grid and telemetry node matrix (0.0 to 1.0).
+   * Opacity multiplier for the technical grid and telemetry node (0.0 to 1.0).
    * @default 1.0
    */
   gridOpacity?: number
@@ -152,7 +152,7 @@ const profileConfig = computed(() => {
       />
     </svg>
 
-    <!-- 2. FLEET NODE MATRIX DOTS -->
+    <!-- 2. FLEET NODE DOTS -->
     <div
       class="absolute inset-0 transition-opacity duration-500"
       :class="profileConfig.dotOpacity"

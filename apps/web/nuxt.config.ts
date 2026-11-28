@@ -6,17 +6,22 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@nuxt/fonts',
     '@pinia/nuxt',
-    '@vueuse/nuxt/module',
+    '@vueuse/nuxt',
     '@nuxt/image',
     '@nuxtjs/seo',
-    '@nuxt/icon/module',
-    '@nuxt/hints',
-    '@nuxt/a11y',
+    '@nuxt/icon',
     '@nuxt/scripts',
     '@nuxtjs/turnstile',
     '@nuxtjs/mcp-toolkit',
     '@nuxtjs/supabase',
   ],
+
+  $development: {
+    modules: [
+      '@nuxt/hints',
+      '@nuxt/a11y',
+    ],
+  },
 
   devtools: {
     enabled: true,
@@ -34,6 +39,8 @@ export default defineNuxtConfig({
       ],
     },
   },
+
+  debug: { templates: true },
 
   app: {
     head: {

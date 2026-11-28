@@ -185,7 +185,7 @@
   border: 1px solid var(--app-border);
 }
 
-/* Technical Grid & Matrix Utilities */
+/* Technical Grid & Utilities */
 @utility grid-pattern {
   background-image:
     linear-gradient(to right, color-mix(in srgb, var(--app-border) 55%, transparent) 1px, transparent 1px),

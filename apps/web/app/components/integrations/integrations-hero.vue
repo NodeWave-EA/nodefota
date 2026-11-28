@@ -69,7 +69,7 @@ const highlights = [
           trailing-icon="i-lucide-arrow-down"
           class="rounded-xs font-semibold"
         >
-          View Device Matrix
+          View Supported Devices
         </UButton>
       </div>
 
