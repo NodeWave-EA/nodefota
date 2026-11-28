@@ -604,9 +604,9 @@ function getTelemetryColor(category: TelemetryCategory) {
                   {{ row.status }}
                 </td>
                 <td class="px-4 py-3.5 font-mono">
-                  <span class="text-green-500">{{ row.succeeded }} ok</span>
+                  <span class="text-success">{{ row.succeeded }} ok</span>
                   <span class="text-muted"> / </span>
-                  <span :class="row.failed > 0 ? 'text-red-500' : 'text-muted'">
+                  <span :class="row.failed > 0 ? 'text-error' : 'text-muted'">
                     {{ row.failed }} failed
                   </span>
                 </td>

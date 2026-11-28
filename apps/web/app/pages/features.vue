@@ -32,41 +32,43 @@ useSeoMeta({
 </script>
 
 <template>
-  <div id="capabilities" class="flex w-full flex-col gap-20 py-12 sm:gap-28 sm:py-16 lg:py-20">
-    <!-- Hero Header -->
-    <FeaturesHero />
+  <UContainer class="py-10 sm:py-16 lg:py-20">
+    <div id="capabilities" class="flex w-full flex-col gap-20 sm:gap-28 lg:gap-32">
+      <!-- Hero Header -->
+      <FeaturesHero />
 
-    <!-- Firmware Lifecycle Management -->
-    <FeatureGrid :config="FIRMWARE_MANAGEMENT_SECTION" />
+      <!-- Firmware Lifecycle Management -->
+      <FeatureGrid :config="FIRMWARE_MANAGEMENT_SECTION" />
 
-    <!-- Cryptographic Firmware Security -->
-    <FeatureGrid :config="FIRMWARE_SECURITY_SECTION" />
+      <!-- Cryptographic Firmware Security -->
+      <FeatureGrid :config="FIRMWARE_SECURITY_SECTION" />
 
-    <!-- Device Identity and Authentication -->
-    <FeatureGrid :config="DEVICE_IDENTITY_SECTION" />
+      <!-- Device Identity and Authentication -->
+      <FeatureGrid :config="DEVICE_IDENTITY_SECTION" />
 
-    <!-- OTA Campaign Management -->
-    <FeatureGrid :config="CAMPAIGN_MANAGEMENT_SECTION" />
+      <!-- OTA Campaign Management -->
+      <FeatureGrid :config="CAMPAIGN_MANAGEMENT_SECTION" />
 
-    <!-- Fleet Monitoring and Telemetry -->
-    <FeatureGrid :config="FLEET_MONITORING_SECTION" />
+      <!-- Fleet Monitoring and Telemetry -->
+      <FeatureGrid :config="FLEET_MONITORING_SECTION" />
 
-    <!-- Rollback and Recovery -->
-    <FeatureGrid :config="ROLLBACK_RECOVERY_SECTION" />
+      <!-- Rollback and Recovery -->
+      <FeatureGrid :config="ROLLBACK_RECOVERY_SECTION" />
 
-    <!-- Embedded Client Libraries -->
-    <FeatureGrid :config="EMBEDDED_LIBRARIES_SECTION" />
+      <!-- Embedded Client Libraries -->
+      <FeatureGrid :config="EMBEDDED_LIBRARIES_SECTION" />
 
-    <!-- Audit and Administrative Controls -->
-    <FeatureGrid :config="AUDIT_ADMINISTRATION_SECTION" />
+      <!-- Audit and Administrative Controls -->
+      <FeatureGrid :config="AUDIT_ADMINISTRATION_SECTION" />
 
-    <!-- Developer Integration -->
-    <FeatureGrid :config="DEVELOPER_INTEGRATION_SECTION" />
+      <!-- Developer Integration -->
+      <FeatureGrid :config="DEVELOPER_INTEGRATION_SECTION" />
 
-    <!-- Frequently Asked Questions -->
-    <FeaturesFaq />
+      <!-- Frequently Asked Questions -->
+      <FeaturesFaq />
 
-    <!-- Final Call to Action -->
-    <FeaturesFinalCta />
-  </div>
+      <!-- Final Call to Action -->
+      <FeaturesFinalCta />
+    </div>
+  </UContainer>
 </template>

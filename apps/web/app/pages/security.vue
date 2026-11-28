@@ -25,70 +25,73 @@ useSeoMeta({
 </script>
 
 <template>
-  <div class="flex w-full flex-col gap-20 py-12 sm:gap-28 sm:py-16 lg:py-20">
-    <SecurityHero />
+  <UContainer class="py-10 sm:py-16 lg:py-20">
+    <div class="flex w-full flex-col gap-20 sm:gap-28 lg:gap-32">
+      <SecurityHero />
 
-    <!-- 02. Core Security Principles -->
-    <SecurityPrinciples />
+      <!-- 02. Core Security Principles -->
+      <SecurityPrinciples />
 
-    <!-- <SecurityFirmwareVerification /> -->
-    <section id="verification" class="flex flex-col gap-8 scroll-mt-24">
-      <div class="flex flex-col items-start gap-3">
-        <UBadge color="primary" variant="subtle" size="sm" class="rounded-xs font-mono text-xs font-semibold uppercase">
-          FIRMWARE INTEGRITY
-        </UBadge>
-        <h2 class="font-sans text-3xl font-bold tracking-tight text-highlighted sm:text-4xl">
-          Device-Side Verification Sequence
-        </h2>
-        <p class="font-sans text-base text-muted">
-          A successful download is not proof of trusted firmware. Verification must happen before writing to flash memory.
-        </p>
-      </div>
+      <!-- 03. Firmware Verification Sequence -->
+      <section id="verification" class="flex flex-col gap-8 scroll-mt-24">
+        <div class="flex flex-col items-start gap-3">
+          <UBadge color="primary" variant="subtle" size="sm" class="rounded-xs font-mono text-xs font-semibold uppercase">
+            FIRMWARE INTEGRITY
+          </UBadge>
+          <h2 class="font-sans text-3xl font-bold tracking-tight text-highlighted sm:text-4xl">
+            Device-Side Verification Sequence
+          </h2>
+          <p class="font-sans text-base text-muted">
+            A successful download is not proof of trusted firmware. Verification must happen before writing to flash memory.
+          </p>
+        </div>
 
-      <SecurityFirmwareVerificationFlow />
-    </section>
+        <SecurityFirmwareVerificationFlow />
+      </section>
 
-    <!-- <SecurityDevicePki /> -->
-    <section id="pki-provisioning" class="flex flex-col gap-8 scroll-mt-24">
-      <div class="flex flex-col items-start gap-3">
-        <UBadge color="primary" variant="subtle" size="sm" class="rounded-xs font-mono text-xs font-semibold uppercase">
-          DEVICE IDENTITY
-        </UBadge>
-        <h2 class="font-sans text-3xl font-bold tracking-tight text-highlighted sm:text-4xl">
-          Device PKI & Mutual TLS Provisioning
-        </h2>
-        <p class="font-sans text-base text-muted">
-          Establish trusted device identity via local key generation, PKCS#10 CSR submission, and X.509 certificate issuance.
-        </p>
-      </div>
+      <!-- 04. Device PKI & Mutual TLS -->
+      <section id="pki-provisioning" class="flex flex-col gap-8 scroll-mt-24">
+        <div class="flex flex-col items-start gap-3">
+          <UBadge color="primary" variant="subtle" size="sm" class="rounded-xs font-mono text-xs font-semibold uppercase">
+            DEVICE IDENTITY
+          </UBadge>
+          <h2 class="font-sans text-3xl font-bold tracking-tight text-highlighted sm:text-4xl">
+            Device PKI & Mutual TLS Provisioning
+          </h2>
+          <p class="font-sans text-base text-muted">
+            Establish trusted device identity via local key generation, PKCS#10 CSR submission, and X.509 certificate issuance.
+          </p>
+        </div>
 
-      <SecurityDevicePkiFlow />
-    </section>
+        <SecurityDevicePkiFlow />
+      </section>
 
-    <SecurityArchitecture />
+      <SecurityArchitecture />
 
-    <section id="rollback" class="flex flex-col gap-8 scroll-mt-24">
-      <div class="flex flex-col items-start gap-3">
-        <UBadge color="warning" variant="subtle" size="sm" class="rounded-xs font-mono text-xs font-semibold uppercase">
-          RECOVERY ARCHITECTURE
-        </UBadge>
-        <h2 class="font-sans text-3xl font-bold tracking-tight text-highlighted sm:text-4xl">
-          Device Recovery & Rollback Controls
-        </h2>
-        <p class="font-sans text-base text-muted">
-          Implement robust recovery mechanisms to ensure device resilience in the face of failed updates or unexpected behavior.
-        </p>
-      </div>
+      <!-- 05. Rollback & Recovery -->
+      <section id="rollback" class="flex flex-col gap-8 scroll-mt-24">
+        <div class="flex flex-col items-start gap-3">
+          <UBadge color="warning" variant="subtle" size="sm" class="rounded-xs font-mono text-xs font-semibold uppercase">
+            RECOVERY ARCHITECTURE
+          </UBadge>
+          <h2 class="font-sans text-3xl font-bold tracking-tight text-highlighted sm:text-4xl">
+            Device Recovery & Rollback Controls
+          </h2>
+          <p class="font-sans text-base text-muted">
+            Implement robust recovery mechanisms to ensure device resilience in the face of failed updates or unexpected behavior.
+          </p>
+        </div>
 
-      <SecurityRollbackFlow />
-    </section>
+        <SecurityRollbackFlow />
+      </section>
 
-    <SecurityThreatModel />
+      <SecurityThreatModel />
 
-    <SecurityLimitations />
+      <SecurityLimitations />
 
-    <SecurityFaq />
+      <SecurityFaq />
 
-    <SecurityFinalCta />
-  </div>
+      <SecurityFinalCta />
+    </div>
+  </UContainer>
 </template>

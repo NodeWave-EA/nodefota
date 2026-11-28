@@ -37,12 +37,12 @@ defineOptions({
 
       <div class="flex flex-wrap items-center gap-3 shrink-0">
         <UButton
-          to="/register"
+          to="/auth/register"
           color="primary"
           variant="solid"
           size="xl"
           trailing-icon="i-lucide-arrow-right"
-          class="rounded-xs font-semibold"
+          class="rounded-xs font-semibold transition-transform duration-200 motion-safe:hover:-translate-y-0.5"
         >
           Get Started
         </UButton>

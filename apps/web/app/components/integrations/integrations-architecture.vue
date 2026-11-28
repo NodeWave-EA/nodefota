@@ -16,7 +16,7 @@ const layers = [
       'OTA Campaign Planner',
     ],
     icon: 'i-lucide-layout-dashboard',
-    color: 'text-amber-400',
+    color: 'text-warning',
   },
   {
     title: '2. BACKEND LAYER',
@@ -44,7 +44,7 @@ const layers = [
       'Signed Download URLs',
     ],
     icon: 'i-lucide-database',
-    color: 'text-teal-400',
+    color: 'text-info',
   },
   {
     title: '4. DEVICE LAYER',
@@ -58,16 +58,16 @@ const layers = [
       'Dual-Partition A/B Rollback',
     ],
     icon: 'i-lucide-cpu',
-    color: 'text-emerald-400',
+    color: 'text-success',
   },
 ]
 </script>
 
 <template>
   <div class="-mx-4 flex flex-col border-y border-default bg-default sm:mx-0 sm:rounded-xs sm:border">
-    <div class="flex items-center justify-between border-b border-default bg-elevated/40 p-4 sm:p-5">
+    <div class="flex items-center justify-between border-b border-default bg-elevated/60 p-4 sm:p-5">
       <div class="flex items-center gap-2.5">
-        <span class="flex h-2 w-2 rounded-xs bg-emerald-400" />
+        <span aria-hidden="true" class="flex size-2 rounded-xs bg-success" />
         <h3 class="font-mono text-xs font-bold tracking-wider text-highlighted uppercase">
           CONNECTED ECOSYSTEM ARCHITECTURE
         </h3>
@@ -77,17 +77,17 @@ const layers = [
       </UBadge>
     </div>
 
-    <div class="grid grid-cols-1 gap-px bg-border/20 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="grid grid-cols-1 gap-px bg-border sm:grid-cols-2 lg:grid-cols-4">
       <div
         v-for="layer in layers"
         :key="layer.title"
-        class="flex flex-col justify-between gap-4 bg-default p-4.5 transition-colors sm:p-5 hover:bg-elevated/40"
+        class="flex flex-col justify-between gap-4 bg-default p-4.5 transition-colors hover:bg-elevated/40 sm:p-5"
       >
         <div class="flex flex-col gap-3">
           <div class="flex items-center justify-between gap-2">
             <div class="flex items-center gap-2">
-              <div class="flex h-7 w-7 items-center justify-center rounded-xs border border-default bg-elevated/60">
-                <UIcon :name="layer.icon" class="h-3.5 w-3.5" :class="layer.color" aria-hidden="true" />
+              <div class="flex size-7 items-center justify-center rounded-xs border border-default bg-elevated/60">
+                <UIcon :name="layer.icon" class="size-3.5" :class="layer.color" aria-hidden="true" />
               </div>
               <span class="font-mono text-[10px] font-bold tracking-wider text-muted uppercase">
                 {{ layer.title }}
@@ -105,7 +105,7 @@ const layers = [
 
           <ul class="flex flex-col gap-1.5 pl-1 font-sans text-xs text-muted">
             <li v-for="item in layer.items" :key="item" class="flex items-center gap-1.5">
-              <span class="h-1 w-1 rounded-full bg-primary/60" />
+              <span aria-hidden="true" class="size-1 rounded-full bg-primary/60" />
               <span>{{ item }}</span>
             </li>
           </ul>
@@ -113,8 +113,8 @@ const layers = [
       </div>
     </div>
 
-    <div class="flex flex-wrap items-center justify-between gap-2 border-t border-default bg-elevated/40 p-3.5 text-xs sm:p-4">
-      <div class="flex items-center gap-2 font-mono text-[11px] text-muted">
+    <div class="flex flex-wrap items-center justify-between gap-2 border-t border-default bg-elevated/60 p-3.5 text-xs sm:p-4">
+      <div class="flex flex-wrap items-center gap-2 font-mono text-[11px] text-muted">
         <span class="font-bold text-highlighted uppercase">Data Paths:</span>
         <span>Dashboard ↔ API (HTTPS/JWT)</span>
         <span>•</span>

@@ -29,44 +29,46 @@ useSeoMeta({
 </script>
 
 <template>
-  <div class="flex w-full flex-col gap-20 py-12 sm:gap-28 sm:py-16 lg:py-20">
-    <!-- Hero -->
-    <HomeHero class="scroll-mt-24" />
+  <UContainer class="py-10 sm:py-16 lg:py-20">
+    <div class="flex w-full flex-col gap-20 sm:gap-28 lg:gap-32">
+      <!-- Hero -->
+      <HomeHero class="scroll-mt-24" />
 
-    <!-- Trust & Technical Indicators -->
-    <HomeTrustIndicators class="scroll-mt-24" />
+      <!-- Trust & Technical Indicators -->
+      <HomeTrustIndicators class="scroll-mt-24" />
 
-    <!-- Problem Statement -->
-    <HomeProblem class="scroll-mt-24" />
+      <!-- Problem Statement -->
+      <HomeProblem class="scroll-mt-24" />
 
-    <!-- Core Platform Capabilities -->
-    <HomeFeatures class="scroll-mt-24" />
+      <!-- Core Platform Capabilities -->
+      <HomeFeatures class="scroll-mt-24" />
 
-    <!-- How It Works (5-Stage Update Lifecycle) -->
-    <HomeWorkflow class="scroll-mt-24" />
+      <!-- How It Works (5-Stage Update Lifecycle) -->
+      <HomeWorkflow class="scroll-mt-24" />
 
-    <!-- Security Architecture -->
-    <HomeSecurity class="scroll-mt-24" />
+      <!-- Security Architecture -->
+      <HomeSecurity class="scroll-mt-24" />
 
-    <!-- Supported Device Ecosystem (ESP32 & ESP8266) -->
-    <HomeDeviceEcosystem class="scroll-mt-24" />
+      <!-- Supported Device Ecosystem (ESP32 & ESP8266) -->
+      <HomeDeviceEcosystem class="scroll-mt-24" />
 
-    <!-- Fleet Management & Operational Visibility -->
-    <HomeFleetManagement class="scroll-mt-24" />
+      <!-- Fleet Management & Operational Visibility -->
+      <HomeFleetManagement class="scroll-mt-24" />
 
-    <!-- Controlled Deployments & Rollback Policies -->
-    <HomeDeploymentStrategies class="scroll-mt-24" />
+      <!-- Controlled Deployments & Rollback Policies -->
+      <HomeDeploymentStrategies class="scroll-mt-24" />
 
-    <!-- Developer Experience & Integration Workbench -->
-    <HomeDeveloperExperience class="scroll-mt-24" />
+      <!-- Developer Experience & Integration Workbench -->
+      <HomeDeveloperExperience class="scroll-mt-24" />
 
-    <!-- Platform Architecture & Modular Stack -->
-    <HomeArchitecture class="scroll-mt-24" />
+      <!-- Platform Architecture & Modular Stack -->
+      <HomeArchitecture class="scroll-mt-24" />
 
-    <!-- Frequently Asked Questions -->
-    <HomeFaq class="scroll-mt-24" />
+      <!-- Frequently Asked Questions -->
+      <HomeFaq class="scroll-mt-24" />
 
-    <!-- Final Call to Action -->
-    <HomeFinalCta class="scroll-mt-24" />
-  </div>
+      <!-- Final Call to Action -->
+      <HomeFinalCta class="scroll-mt-24" />
+    </div>
+  </UContainer>
 </template>

@@ -28,57 +28,49 @@ const capabilities = [
 </script>
 
 <template>
-  <section class="flex flex-col gap-4 py-6">
-    <div class="flex flex-col gap-1">
-      <span class="font-mono text-xs font-bold text-primary uppercase">01 // PARENT ECOSYSTEM</span>
-      <h2 class="font-sans text-2xl font-bold text-highlighted">
+  <section aria-labelledby="about-nodewave-heading" class="flex flex-col gap-6">
+    <div class="flex flex-col items-start gap-3">
+      <UBadge color="primary" variant="subtle" size="sm" class="rounded-xs font-mono text-xs font-semibold uppercase">
+        01 // PARENT ECOSYSTEM
+      </UBadge>
+      <h2 id="about-nodewave-heading" class="font-sans text-3xl font-bold tracking-tight text-highlighted sm:text-4xl">
         Associated with NodeWave
       </h2>
-      <p class="font-sans text-xs text-muted leading-relaxed max-w-3xl">
-        The Secure FOTA Platform is an IoT firmware lifecycle management initiative associated with <strong>NodeWave</strong>, an intelligent technology solutions brand helping businesses adopt connected systems, software, and automation.
+      <p class="max-w-3xl font-sans text-base leading-relaxed text-muted">
+        The Secure FOTA Platform is an IoT firmware lifecycle management initiative associated with <strong class="text-highlighted">NodeWave</strong>, an intelligent technology solutions brand helping businesses adopt connected systems, software, and automation.
       </p>
     </div>
 
     <div class="-mx-4 flex flex-col overflow-hidden border-y border-default bg-default sm:mx-0 sm:rounded-xs sm:border">
       <div class="flex flex-col justify-between gap-4 border-b border-default bg-elevated/60 p-5 sm:flex-row sm:items-center">
-        <div class="flex items-center gap-3">
-          <div class="flex h-10 w-10 items-center justify-center rounded-xs border border-primary/30 bg-primary/10">
-            <UIcon name="i-lucide-waves" class="h-5 w-5 text-primary" />
-          </div>
-          <div>
-            <h3 class="font-mono text-sm font-bold text-highlighted uppercase">
-              NODEWAVE
-            </h3>
-            <p class="font-sans text-xs text-muted">
-              Intelligent IoT & Software Solutions
-            </p>
-          </div>
-        </div>
+        <AppNodewaveLogo :as-link="false" />
 
         <UButton
           to="https://nodewave.net"
           target="_blank"
+          external
+          rel="noopener noreferrer"
           color="primary"
           variant="subtle"
           size="xs"
-          icon="i-lucide-external-link"
-          class="rounded-xs font-mono text-xs font-bold w-fit"
+          trailing-icon="i-lucide-arrow-up-right"
+          class="w-fit rounded-xs font-mono text-xs font-bold"
         >
           Visit nodewave.net
         </UButton>
       </div>
 
-      <div class="grid grid-cols-1 gap-px bg-border/20 sm:grid-cols-2 lg:grid-cols-4">
+      <div class="grid grid-cols-1 gap-px bg-border sm:grid-cols-2 lg:grid-cols-4">
         <div
           v-for="item in capabilities"
           :key="item.title"
-          class="flex flex-col gap-2 bg-default p-4.5 transition-colors hover:bg-elevated/40"
+          class="flex flex-col gap-2.5 bg-default p-5 transition-colors hover:bg-elevated/40"
         >
           <div class="flex items-center gap-2">
-            <UIcon :name="item.icon" class="h-4 w-4 text-amber-400 shrink-0" />
-            <h4 class="font-sans text-xs font-bold text-highlighted">
+            <UIcon :name="item.icon" class="size-4 shrink-0 text-primary" aria-hidden="true" />
+            <h3 class="font-sans text-sm font-bold text-highlighted">
               {{ item.title }}
-            </h4>
+            </h3>
           </div>
           <p class="font-sans text-xs leading-relaxed text-muted">
             {{ item.description }}

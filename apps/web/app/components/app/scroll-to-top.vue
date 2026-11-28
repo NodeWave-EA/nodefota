@@ -1,152 +1,118 @@
 <script setup lang="ts">
-import { useEventListener, useWindowScroll } from '@vueuse/core'
-import { computed, onMounted, ref } from 'vue'
+import { onMounted, onUnmounted, ref } from 'vue'
 
 defineOptions({
   name: 'AppScrollToTop',
 })
 
-const { y: windowY } = useWindowScroll()
-const scrollProgress = ref(0)
+const { isMotionReduced } = useReduceMotion()
+
 const isVisible = ref(false)
+const scrollProgress = ref(0)
+let rafId: number | null = null
 
-// SVG circle dimensions
-const radius = 20
-const circumference = 2 * Math.PI * radius
-const strokeDashoffset = computed(() => {
-  return circumference - (scrollProgress.value / 100) * circumference
-})
+function computeScrollMetrics() {
+  rafId = null
+  const scrollTop = window.scrollY || document.documentElement.scrollTop || 0
+  const docHeight = document.documentElement.scrollHeight - window.innerHeight
 
-/**
- * Calculates current scroll percentage across document, body, or active child container.
- */
-function updateScroll(event?: Event) {
-  const scrollingEl = document.scrollingElement || document.documentElement || document.body
-  let currentScrollTop = windowY.value || scrollingEl.scrollTop || 0
-  let maxScrollPx = scrollingEl.scrollHeight - scrollingEl.clientHeight
+  isVisible.value = scrollTop > 280
 
-  // Inspect target element if event fired from a scrollable child container
-  if (event?.target) {
-    const target = (event.target === document
-      ? scrollingEl
-      : event.target) as HTMLElement
-    if (target && target.scrollTop !== undefined && target.scrollHeight > target.clientHeight) {
-      if (target.scrollTop > currentScrollTop) {
-        currentScrollTop = target.scrollTop
-        maxScrollPx = target.scrollHeight - target.clientHeight
-      }
-    }
+  if (docHeight > 0) {
+    const ratio = Math.min(Math.max(scrollTop / docHeight, 0), 1)
+    scrollProgress.value = Math.round(ratio * 1000) / 10
   }
-
-  // Fallback scan for active scrollable layout wrappers
-  if (currentScrollTop === 0) {
-    const activeScrollable = document.querySelector('.overflow-y-auto, .overflow-auto, main') as HTMLElement
-    if (activeScrollable && activeScrollable.scrollTop > 0) {
-      currentScrollTop = activeScrollable.scrollTop
-      maxScrollPx = activeScrollable.scrollHeight - activeScrollable.clientHeight
-    }
+  else {
+    scrollProgress.value = 0
   }
-
-  const progress = maxScrollPx > 0
-    ? (currentScrollTop / maxScrollPx) * 100
-    : 0
-
-  scrollProgress.value = Math.min(100, Math.max(0, Math.round(progress)))
-  isVisible.value = currentScrollTop > 50
 }
 
-/**
- * Smoothly scrolls window and nested scrollable containers back to top.
- */
-function scrollToTop() {
-  window.scrollTo({ top: 0, behavior: 'smooth' })
-  document.scrollingElement?.scrollTo({ top: 0, behavior: 'smooth' })
-  document.body.scrollTo({ top: 0, behavior: 'smooth' })
+function scheduleScrollUpdate() {
+  if (rafId !== null)
+    return
+  rafId = window.requestAnimationFrame(computeScrollMetrics)
+}
 
-  const scrollables = document.querySelectorAll<HTMLElement>('.overflow-y-auto, .overflow-auto, main')
-  scrollables.forEach((el) => {
-    if (el.scrollTop > 0) {
-      el.scrollTo({ top: 0, behavior: 'smooth' })
-    }
+function scrollToTopNode() {
+  window.scrollTo({
+    top: 0,
+    behavior: isMotionReduced.value ? 'auto' : 'smooth',
   })
 }
 
-// VueUse event listeners
-useEventListener(window, 'scroll', updateScroll, { capture: true, passive: true })
-useEventListener(window, 'resize', updateScroll, { passive: true })
-
-// Sync state on mount and route change
 onMounted(() => {
-  updateScroll()
+  window.addEventListener('scroll', scheduleScrollUpdate, { passive: true })
+  window.addEventListener('resize', scheduleScrollUpdate, { passive: true })
+  computeScrollMetrics()
+})
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', scheduleScrollUpdate)
+  window.removeEventListener('resize', scheduleScrollUpdate)
+  if (rafId !== null) {
+    window.cancelAnimationFrame(rafId)
+    rafId = null
+  }
 })
 </script>
 
 <template>
-  <ClientOnly>
-    <Transition name="scroll-top-fade">
-      <div
-        v-if="isVisible"
-        class="fixed bottom-6 right-6 z-999 flex items-center justify-center select-none"
+  <Transition
+    enter-active-class="transition-all duration-300 ease-out"
+    enter-from-class="opacity-0 translate-y-2"
+    enter-to-class="opacity-100 translate-y-0"
+    leave-active-class="transition-all duration-200 ease-in"
+    leave-from-class="opacity-100 translate-y-0"
+    leave-to-class="opacity-0 translate-y-2"
+  >
+    <div
+      v-if="isVisible"
+      class="fixed bottom-3 right-3 sm:bottom-4 sm:right-4 z-50 flex items-center justify-center"
+    >
+      <UTooltip
+        text="Back to top"
+        :content="{ side: 'left', sideOffset: 8 }"
       >
-        <LazyUTooltip :text="`Back to top (${scrollProgress}%)`">
-          <UButton
-            color="neutral"
-            variant="outline"
-            aria-label="Scroll to top"
-            class="group relative flex h-12 w-12 items-center justify-center rounded-full bg-background/95 p-0 text-foreground shadow-xl backdrop-blur-md transition-all duration-300 hover:scale-110 active:scale-95"
-            @click="scrollToTop"
+        <button
+          type="button"
+          aria-label="Scroll back to top"
+          class="group relative inline-flex items-center justify-center size-9 rounded-xs border border-(--app-border) bg-(--app-surface-subtle)/85 dark:bg-(--app-surface-subtle)/90 backdrop-blur-md ring-1 ring-inset ring-white/45 dark:ring-white/6 shadow-[0_2px_10px_-2px_rgba(0,0,0,0.06),0_6px_16px_-4px_rgba(0,0,0,0.05)] dark:shadow-[0_4px_14px_-2px_rgba(0,0,0,0.45),0_8px_20px_-4px_rgba(0,0,0,0.35)] text-neutral-700 dark:text-neutral-200 hover:bg-(--app-surface-hover)/95 hover:border-primary-500/40 hover:text-primary-600 dark:hover:text-primary-400 transition-all duration-200 ease-out cursor-pointer select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+          @click="scrollToTopNode"
+        >
+          <!-- Perimeter Reading / Scroll Progress Indicator -->
+          <svg
+            class="absolute inset-0 size-full pointer-events-none"
+            viewBox="0 0 36 36"
+            fill="none"
+            aria-hidden="true"
           >
-            <!-- SVG Circular Progress Ring -->
-            <svg
-              class="absolute inset-0 h-full w-full -rotate-90 pointer-events-none p-0.5"
-              viewBox="0 0 48 48"
-            >
-              <!-- Background Track -->
-              <circle
-                cx="24"
-                cy="24"
-                :r="radius"
-                class="stroke-current opacity-15 text-foreground"
-                stroke-width="3"
-                fill="none"
-              />
-              <!-- Dynamic Progress Fill -->
-              <circle
-                cx="24"
-                cy="24"
-                :r="radius"
-                class="stroke-primary transition-all duration-150 ease-out"
-                stroke-width="3"
-                stroke-linecap="round"
-                fill="none"
-                :stroke-dasharray="circumference"
-                :stroke-dashoffset="strokeDashoffset"
-              />
-            </svg>
-
-            <!-- Center Icon -->
-            <UIcon
-              name="i-line-md-arrow-up"
-              class="relative z-10 h-5 w-5 text-foreground transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:text-primary"
+            <rect
+              x="1"
+              y="1"
+              width="34"
+              height="34"
+              rx="2"
+              pathLength="100"
+              stroke="var(--ui-primary)"
+              stroke-width="1.75"
+              stroke-linecap="square"
+              stroke-dasharray="100"
+              :stroke-dashoffset="100 - scrollProgress"
+              class="transition-[stroke-dashoffset] duration-100 ease-out"
             />
-          </UButton>
-        </LazyUTooltip>
-      </div>
-    </Transition>
-  </ClientOnly>
+          </svg>
+
+          <UIcon
+            name="i-lucide-arrow-up"
+            class="size-4 transition-transform duration-200 group-hover:-translate-y-0.5"
+            aria-hidden="true"
+          />
+        </button>
+      </UTooltip>
+    </div>
+  </Transition>
 </template>
 
 <style scoped>
-.scroll-top-fade-enter-active,
-.scroll-top-fade-leave-active {
-  transition:
-    opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.scroll-top-fade-enter-from,
-.scroll-top-fade-leave-to {
-  opacity: 0;
-  transform: translateY(12px) scale(0.9);
-}
+/* Prevents Tailwind v4 Vite plugin HMR issue */
 </style>

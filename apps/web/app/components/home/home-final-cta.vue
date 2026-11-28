@@ -10,7 +10,7 @@ const sectionContent = {
     'Secure your firmware distribution workflow, simplify device management, and gain visibility into every deployment with a platform designed for modern IoT development.',
   primaryCta: {
     label: 'Get Started',
-    to: '/register',
+    to: '/auth/register',
     icon: 'i-lucide-arrow-right',
   },
   secondaryCta: {

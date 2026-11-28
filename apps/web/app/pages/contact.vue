@@ -28,14 +28,16 @@ function handleCategorySelect(category: EnquiryCategory) {
 </script>
 
 <template>
-  <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-    <ContactHero />
-    <ContactOptions @select-category="handleCategorySelect" />
-    <ContactForm :initial-category="activeCategory" />
-    <ContactTechnicalGuidance />
-    <ContactDocumentation />
-    <ContactNodeWave />
-    <ContactFAQ />
-    <ContactFinalCTA />
-  </main>
+  <UContainer class="py-10 sm:py-16 lg:py-20">
+    <div class="flex w-full flex-col gap-20 sm:gap-28 lg:gap-32">
+      <ContactHero />
+      <ContactOptions @select-category="handleCategorySelect" />
+      <ContactForm :initial-category="activeCategory" />
+      <ContactTechnicalGuidance />
+      <ContactDocumentation />
+      <ContactNodeWave />
+      <ContactFAQ />
+      <ContactFinalCTA />
+    </div>
+  </UContainer>
 </template>

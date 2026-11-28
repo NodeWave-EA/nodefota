@@ -16,7 +16,7 @@ const infra: IntegrationItem[] = [
     statusLabel: 'Implemented',
     methodOrTech: 'Supabase Studio & Auth',
     icon: 'i-lucide-layers',
-    iconColor: 'text-emerald-400',
+    iconColor: 'text-success',
   },
   {
     id: 'minio',
@@ -28,7 +28,7 @@ const infra: IntegrationItem[] = [
     statusLabel: 'Implemented',
     methodOrTech: 'AWS S3 SDK Compatible',
     icon: 'i-lucide-hard-drive',
-    iconColor: 'text-amber-400',
+    iconColor: 'text-warning',
   },
   {
     id: 'postgres-prisma',
@@ -40,7 +40,7 @@ const infra: IntegrationItem[] = [
     statusLabel: 'Implemented',
     methodOrTech: 'Prisma Client v5',
     icon: 'i-lucide-database',
-    iconColor: 'text-teal-400',
+    iconColor: 'text-info',
   },
   {
     id: 'docker',
@@ -58,16 +58,18 @@ const infra: IntegrationItem[] = [
 </script>
 
 <template>
-  <section class="flex flex-col gap-4 py-6">
-    <div class="flex flex-col gap-1">
-      <span class="font-mono text-xs font-bold text-primary uppercase">03 // INFRASTRUCTURE & STORAGE</span>
-      <h2 class="font-sans text-2xl font-bold text-highlighted">
+  <section aria-labelledby="integrations-infra-heading" class="flex flex-col gap-6">
+    <div class="flex flex-col items-start gap-2">
+      <UBadge color="primary" variant="subtle" size="sm" class="rounded-xs font-mono text-xs font-semibold uppercase">
+        03 // INFRASTRUCTURE & STORAGE
+      </UBadge>
+      <h2 id="integrations-infra-heading" class="font-sans text-3xl font-bold tracking-tight text-highlighted sm:text-4xl">
         Self-Hosted Enterprise Storage Architecture
       </h2>
     </div>
 
     <div class="-mx-4 flex flex-col overflow-hidden border-y border-default bg-default sm:mx-0 sm:rounded-xs sm:border">
-      <div class="grid grid-cols-1 gap-px bg-border/20 sm:grid-cols-2 lg:grid-cols-4">
+      <div class="grid grid-cols-1 gap-px bg-border sm:grid-cols-2 lg:grid-cols-4">
         <div
           v-for="item in infra"
           :key="item.id"
@@ -76,8 +78,8 @@ const infra: IntegrationItem[] = [
           <div class="flex flex-col gap-2.5">
             <div class="flex items-center justify-between gap-2">
               <div class="flex items-center gap-2">
-                <div class="flex h-7 w-7 items-center justify-center rounded-xs border border-default bg-elevated/60">
-                  <UIcon :name="item.icon" class="h-3.5 w-3.5" :class="item.iconColor" aria-hidden="true" />
+                <div class="flex size-7 items-center justify-center rounded-xs border border-default bg-elevated/60">
+                  <UIcon :name="item.icon" class="size-3.5" :class="item.iconColor" aria-hidden="true" />
                 </div>
                 <span class="font-mono text-[10px] font-bold tracking-wider text-muted uppercase">
                   {{ item.eyebrow }}
@@ -99,7 +101,7 @@ const infra: IntegrationItem[] = [
             </div>
           </div>
 
-          <div class="mt-2 font-mono text-[11px] font-semibold text-primary truncate">
+          <div class="mt-2 truncate font-mono text-[11px] font-semibold text-primary">
             {{ item.methodOrTech }}
           </div>
         </div>

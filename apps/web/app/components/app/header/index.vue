@@ -1,178 +1,181 @@
 <script setup lang="ts">
-import { breakpointsTailwind, useBreakpoints } from '@vueuse/core'
-import { computed, ref, watch } from 'vue'
-import { GITHUB_REPO, HEADER_NAVIGATION } from '~/utils/navigations'
+import { onMounted, onUnmounted, watch } from 'vue'
 
-defineOptions({
-  name: 'AppHeader',
+import { navLinks } from '~/constants'
+
+const props = withDefaults(defineProps<{
+  /** Auto-hide header when scrolling down to read and reveal when scrolling up */
+  autoHideOnRead?: boolean
+}>(), {
+  autoHideOnRead: false,
 })
 
 const route = useRoute()
-const breakpoints = useBreakpoints(breakpointsTailwind)
 
-type HeaderMenuMode = 'modal' | 'slideover' | 'drawer'
+const isMobileMenuOpen = ref(false)
+const isHeaderVisible = useState<boolean>('blog-header-visible', () => true)
 
-const isMobile = breakpoints.smaller('sm')
-const isTablet = breakpoints.between('sm', 'lg')
+let lastScrollY = 0
+let ticking = false
 
-const isMenuOpen = ref(false)
+function syncHeaderOffsetVar(visible: boolean) {
+  if (!import.meta.client)
+    return
 
-const currentMode = computed<HeaderMenuMode>(() => {
-  if (isMobile.value) {
-    return 'drawer'
+  const headerHeight = document.querySelector<HTMLElement>('header')?.offsetHeight
+  document.documentElement.style.setProperty(
+    '--blog-header-offset',
+    visible
+      ? (headerHeight
+          ? `${headerHeight}px`
+          : 'var(--ui-header-height)')
+      : '0px',
+  )
+}
+
+function updateHeaderVisibility() {
+  ticking = false
+
+  if (!props.autoHideOnRead || isMobileMenuOpen.value) {
+    isHeaderVisible.value = true
+    return
   }
-  if (isTablet.value) {
-    return 'slideover'
+
+  const currentY = Math.max(0, window.scrollY || 0)
+  const delta = currentY - lastScrollY
+
+  if (currentY <= 48) {
+    isHeaderVisible.value = true
   }
-  return 'modal'
+  else if (delta > 6) {
+    // Scrolling down (finger pulled up): hide header while reading
+    isHeaderVisible.value = false
+  }
+  else if (delta < -6) {
+    // Scrolling up (finger pulled down): show header
+    isHeaderVisible.value = true
+  }
+
+  lastScrollY = currentY
+}
+
+function onWindowScroll() {
+  if (!ticking) {
+    ticking = true
+    window.requestAnimationFrame(updateHeaderVisibility)
+  }
+}
+
+watch(
+  isHeaderVisible,
+  (visible) => {
+    syncHeaderOffsetVar(visible)
+  },
+  { immediate: true },
+)
+
+watch(isMobileMenuOpen, (open) => {
+  if (open) {
+    isHeaderVisible.value = true
+  }
 })
 
 watch(
   () => route.fullPath,
   () => {
-    isMenuOpen.value = false
+    isMobileMenuOpen.value = false
+    isHeaderVisible.value = true
+    if (import.meta.client) {
+      lastScrollY = Math.max(0, window.scrollY || 0)
+    }
   },
 )
 
-const authActions = {
-  signIn: {
-    label: 'Sign In',
-    to: '/login',
-  },
-  getStarted: {
-    label: 'Get Started',
-    to: '/register',
-    icon: 'i-lucide-arrow-right',
-  },
-}
+onMounted(() => {
+  lastScrollY = Math.max(0, window.scrollY || 0)
+  isHeaderVisible.value = true
+  syncHeaderOffsetVar(true)
+
+  if (props.autoHideOnRead) {
+    window.addEventListener('scroll', onWindowScroll, { passive: true })
+  }
+})
+
+onUnmounted(() => {
+  if (import.meta.client) {
+    window.removeEventListener('scroll', onWindowScroll)
+    document.documentElement.style.removeProperty('--blog-header-offset')
+  }
+  isHeaderVisible.value = true
+})
+
+const config = useRuntimeConfig()
+const siteUrl = (config.public.siteUrl || 'https://nodewaveblog.vercel.app').replace(/\/$/, '')
+
+// Dynamically generate SiteNavigationElement Schema from navLinks
+useSchemaOrg([
+  defineItemList({
+    '@type': 'SiteNavigationElement',
+    'name': 'Main Navigation',
+    'itemListElement': navLinks.map(link => ({
+      name: link.label!.charAt(0).toUpperCase() + link.label!.slice(1),
+      url: `${siteUrl}${link.to}`,
+    })),
+  }),
+])
 </script>
 
 <template>
   <UHeader
-    v-model:open="isMenuOpen"
-    :mode="currentMode"
+    v-model:open="isMobileMenuOpen"
+    mode="slideover"
+    class="bg-transparent border-0 shadow-none backdrop-blur-none"
     :ui="{
-      root: 'border-b border-default bg-default/90 backdrop-blur-md',
-      toggle: 'rounded-xs',
+      root: [
+        'sticky top-0 z-50 pt-0 pb-0 px-0 lg:pt-2.5 lg:pb-1 lg:px-8 bg-transparent border-0 shadow-none transition-all duration-300 ease-out will-change-transform',
+        autoHideOnRead && !isHeaderVisible
+          ? '-translate-y-full opacity-0 pointer-events-none'
+          : 'translate-y-0 opacity-100',
+      ].join(' '),
+      container: 'w-full max-w-none lg:max-w-(--ui-container) mx-auto h-14 px-4 sm:px-6 lg:px-4 rounded-none lg:rounded-xs border-0 border-b border-(--app-border) lg:border bg-(--app-surface-subtle)/90 dark:bg-(--app-surface-subtle)/95 lg:bg-(--app-surface-subtle)/85 dark:lg:bg-(--app-surface-subtle)/90 backdrop-blur-md shadow-none lg:ring-1 lg:ring-inset lg:ring-white/45 dark:lg:ring-white/6 lg:shadow-[0_2px_10px_-2px_rgba(0,0,0,0.06),0_6px_16px_-4px_rgba(0,0,0,0.05)] dark:lg:shadow-[0_4px_14px_-2px_rgba(0,0,0,0.45),0_8px_20px_-4px_rgba(0,0,0,0.35)] flex items-center justify-between gap-2 transition-colors duration-300',
+      left: 'flex items-center justify-start min-w-0 shrink lg:flex-1',
+      center: 'hidden lg:flex items-center justify-center shrink-0',
+      right: 'flex items-center justify-end gap-1 shrink-0 lg:flex-1',
+      toggle: 'lg:hidden rounded-xs border border-transparent hover:border-(--app-border) hover:bg-(--app-bg) text-neutral-700 dark:text-neutral-300 transition-colors cursor-pointer',
+      content: 'lg:hidden bg-(--app-bg) border-l border-(--app-border)',
+      overlay: 'lg:hidden bg-neutral-950/40 backdrop-blur-xs',
+      header: 'px-4 sm:px-6 h-(--ui-header-height) shrink-0 flex items-center justify-between gap-3 border-b border-(--app-border) bg-(--app-bg)',
+      body: 'p-4 sm:p-6 overflow-y-auto bg-(--app-bg) flex-1',
     }"
   >
-    <template #title>
+    <!-- Logo -->
+    <template #left>
       <NuxtLink
         to="/"
         aria-label="NodeFOTA Home"
-        class="inline-flex items-center rounded-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+        class="inline-flex h-14 items-center rounded-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
       >
         <AppLogo
-          :width="124"
-          :height="50"
+          :height="56"
           title="NodeFOTA - Secure FOTA Platform"
+          class="h-14 w-auto"
         />
       </NuxtLink>
     </template>
 
+    <!-- Desktop Navigation -->
     <template #default>
-      <UNavigationMenu
-        highlight
-        highlight-color="primary"
-        :items="HEADER_NAVIGATION"
-        orientation="horizontal"
-        variant="link"
-        aria-label="Primary navigation"
-        :ui="{
-          root: 'justify-center',
-          list: 'gap-1',
-          link: 'rounded-xs px-3 py-2 font-sans text-sm font-medium transition-colors',
-          linkLeadingIcon: 'size-4',
-          linkLabel: 'whitespace-nowrap',
-        }"
-      />
+      <AppHeaderDesktop />
     </template>
 
+    <!-- Header Actions -->
     <template #right>
-      <div class="flex items-center gap-1.5 sm:gap-2">
-        <AppThemeToggle />
-
-        <UTooltip arrow text="GitHub Repository">
-          <UButton
-            v-bind="GITHUB_REPO"
-            color="neutral"
-            variant="ghost"
-            size="sm"
-            aria-label="GitHub Repository"
-            rel="noopener noreferrer"
-            class="rounded-xs"
-          />
-        </UTooltip>
-
-        <span
-          aria-hidden="true"
-          class="hidden h-4 w-px bg-border lg:inline-block"
-        />
-
-        <UButton
-          :to="authActions.signIn.to"
-          color="neutral"
-          variant="ghost"
-          size="sm"
-          class="hidden whitespace-nowrap rounded-xs font-sans text-xs font-semibold lg:inline-flex"
-        >
-          {{ authActions.signIn.label }}
-        </UButton>
-
-        <UButton
-          :to="authActions.getStarted.to"
-          color="primary"
-          variant="solid"
-          size="sm"
-          :trailing-icon="authActions.getStarted.icon"
-          class="hidden whitespace-nowrap rounded-xs font-sans text-xs font-semibold lg:inline-flex"
-        >
-          {{ authActions.getStarted.label }}
-        </UButton>
-      </div>
+      <AppHeaderActions />
     </template>
 
+    <!-- Mobile Navigation Panel -->
     <template #body>
-      <div class="flex flex-col gap-6">
-        <UNavigationMenu
-          highlight
-          highlight-color="primary"
-          :items="HEADER_NAVIGATION"
-          orientation="vertical"
-          variant="pill"
-          aria-label="Mobile navigation"
-          :ui="{
-            list: 'gap-1',
-            link: 'rounded-xs px-3 py-2.5 font-sans text-sm font-medium',
-            linkLeadingIcon: 'size-4',
-          }"
-        />
-
-        <div class="grid grid-cols-1 gap-2 border-t border-default pt-4 sm:grid-cols-2">
-          <UButton
-            :to="authActions.signIn.to"
-            color="neutral"
-            variant="outline"
-            size="md"
-            block
-            class="rounded-xs font-sans text-sm font-semibold"
-          >
-            {{ authActions.signIn.label }}
-          </UButton>
-
-          <UButton
-            :to="authActions.getStarted.to"
-            color="primary"
-            variant="solid"
-            size="md"
-            block
-            :trailing-icon="authActions.getStarted.icon"
-            class="rounded-xs font-sans text-sm font-semibold"
-          >
-            {{ authActions.getStarted.label }}
-          </UButton>
-        </div>
-      </div>
+      <LazyAppHeaderMobile @navigate="isMobileMenuOpen = false" />
     </template>
   </UHeader>
 </template>

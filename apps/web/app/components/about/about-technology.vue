@@ -18,20 +18,22 @@ const techStack = [
 </script>
 
 <template>
-  <section class="flex flex-col gap-4 py-6">
-    <div class="flex flex-col gap-1">
-      <span class="font-mono text-xs font-bold text-primary uppercase">04 // ARCHITECTURE</span>
-      <h2 class="font-sans text-2xl font-bold text-highlighted">
+  <section aria-labelledby="about-tech-heading" class="flex flex-col gap-6">
+    <div class="flex flex-col items-start gap-3">
+      <UBadge color="primary" variant="subtle" size="sm" class="rounded-xs font-mono text-xs font-semibold uppercase">
+        04 // ARCHITECTURE
+      </UBadge>
+      <h2 id="about-tech-heading" class="font-sans text-3xl font-bold tracking-tight text-highlighted sm:text-4xl">
         Technology & Engineering Stack
       </h2>
     </div>
 
     <div class="-mx-4 flex flex-col overflow-hidden border-y border-default bg-default sm:mx-0 sm:rounded-xs sm:border">
-      <div class="grid grid-cols-1 gap-px bg-border/20 sm:grid-cols-2 lg:grid-cols-2">
+      <div class="grid grid-cols-1 gap-px bg-border sm:grid-cols-2">
         <div
           v-for="item in techStack"
           :key="item.area"
-          class="flex flex-col justify-between gap-1 bg-default p-4 transition-colors hover:bg-elevated/40 sm:flex-row sm:items-center"
+          class="flex flex-col justify-between gap-1 bg-default p-4.5 transition-colors hover:bg-elevated/40 sm:flex-row sm:items-center sm:px-5"
         >
           <span class="font-mono text-xs font-bold text-primary uppercase">{{ item.area }}</span>
           <span class="font-mono text-xs font-semibold text-highlighted">{{ item.tech }}</span>

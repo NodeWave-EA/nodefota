@@ -12,6 +12,8 @@ const props = withDefaults(defineProps<Props>(), {
   title: 'NodeFOTA Icon',
   color: undefined,
   theme: undefined,
+  primaryColor: undefined,
+  secondaryColor: undefined,
 })
 
 interface Props {
@@ -23,17 +25,17 @@ interface Props {
   height?: number | string
   /** Accessible title for screen readers */
   title?: string
-  /** Color mode or scheme string (e.g., 'light', 'dark', 'system', or hex/CSS color) */
+  /** Color mode or scheme string ('light', 'dark', 'system', or hex/CSS color) */
   color?: string
-  /** Theme mode alias (e.g., 'light', 'dark', 'system') */
+  /** Theme mode alias ('light', 'dark', 'system') */
   theme?: string
+  /** Custom primary driver color override */
+  primaryColor?: string
+  /** Custom secondary driver color override */
+  secondaryColor?: string
 }
 
-// Unique ID prefix to avoid DOM gradient/filter ID collisions across multiple SVG instances
-const fallbackId = `nf-${Math.random().toString(36).substring(2, 9)}`
-const instanceId = typeof useId === 'function'
-  ? useId()
-  : fallbackId
+const instanceId = useId()
 
 const titleId = computed(() => `${instanceId}-title`)
 const shieldGradId = computed(() => `${instanceId}-iotShieldGrad`)
@@ -69,7 +71,6 @@ const computedHeight = computed(() => {
   return '100%'
 })
 
-// Theme Awareness Logic
 const activeMode = computed(() => {
   const mode = props.color ?? props.theme
   if (!mode || mode === 'system' || mode === 'auto')
@@ -79,7 +80,9 @@ const activeMode = computed(() => {
 
 const isExplicitDark = computed(() => activeMode.value === 'dark')
 const isExplicitLight = computed(() => activeMode.value === 'light')
-const isCustomColor = computed(() => activeMode.value !== 'system' && !isExplicitDark.value && !isExplicitLight.value)
+const isCustomColor = computed(
+  () => activeMode.value !== 'system' && !isExplicitDark.value && !isExplicitLight.value,
+)
 
 const themeClass = computed(() => {
   if (isExplicitDark.value)
@@ -94,9 +97,35 @@ const computedStyle = computed(() => {
     background: 'transparent',
   }
 
-  if (isCustomColor.value) {
-    const customVal = props.color || props.theme || '#0f172a'
-    style['--mode-accent-contrast'] = customVal
+  if (isExplicitLight.value) {
+    style['--icon-primary'] = props.primaryColor || 'var(--color-primary-600)'
+    style['--icon-secondary'] = props.secondaryColor || 'var(--color-primary-800)'
+    style['--icon-accent-contrast'] = '#09090b'
+    style['--icon-packet-fill'] = props.primaryColor || 'var(--color-primary-600)'
+    style['--icon-shield-opacity'] = '0.1'
+    style['--icon-stroke-opacity'] = '0.4'
+    style['--icon-glow'] = 'color-mix(in srgb, var(--color-primary-500) 20%, transparent)'
+  }
+  else if (isExplicitDark.value) {
+    style['--icon-primary'] = props.primaryColor || 'var(--color-primary-400)'
+    style['--icon-secondary'] = props.secondaryColor || 'var(--color-success-400)'
+    style['--icon-accent-contrast'] = '#ffffff'
+    style['--icon-packet-fill'] = '#ffffff'
+    style['--icon-shield-opacity'] = '0.16'
+    style['--icon-stroke-opacity'] = '0.6'
+    style['--icon-glow'] = 'color-mix(in srgb, var(--color-primary-400) 45%, transparent)'
+  }
+  else if (isCustomColor.value) {
+    const customVal = props.color || props.theme || 'currentColor'
+    style['--icon-accent-contrast'] = customVal
+  }
+
+  if (props.primaryColor) {
+    style['--icon-primary'] = props.primaryColor
+    style['--icon-packet-fill'] = props.primaryColor
+  }
+  if (props.secondaryColor) {
+    style['--icon-secondary'] = props.secondaryColor
   }
 
   return style
@@ -112,12 +141,11 @@ const computedStyle = computed(() => {
     role="img"
     :aria-labelledby="titleId"
     :style="computedStyle"
-    class="node-fota-icon"
+    class="node-fota-icon block shrink-0 select-none"
     :class="[themeClass]"
   >
     <title :id="titleId">{{ title }}</title>
     <defs>
-      <!-- Dynamic IoT Gradient Palette Definitions with CSS-controlled Stop Animations -->
       <linearGradient :id="shieldGradId" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" class="stop-shield-0" />
         <stop offset="100%" class="stop-shield-1" />
@@ -133,9 +161,8 @@ const computedStyle = computed(() => {
         <stop offset="100%" class="stop-shield-0" stop-opacity="0" />
       </radialGradient>
 
-      <!-- Adaptive Glow/Shadow Filters for Light and Dark Modes -->
-      <filter :id="glowFilterId" x="-30%" y="-30%" width="160%" height="160%">
-        <feGaussianBlur stdDeviation="4" result="blur" />
+      <filter :id="glowFilterId" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="3" result="blur" />
         <feMerge>
           <feMergeNode in="blur" />
           <feMergeNode in="SourceGraphic" />
@@ -143,295 +170,182 @@ const computedStyle = computed(() => {
       </filter>
     </defs>
 
-    <g class="fota-logo-group" :filter="`url(#${glowFilterId})`">
-      <!-- 1. WIRELESS SIGNAL ARCS (UPWARD OVER-THE-AIR TRANSMISSION) -->
+    <g class="fota-icon-group" :filter="`url(#${glowFilterId})`">
+      <!-- Wireless Signal Arcs -->
       <g :stroke="`url(#${shieldGradId})`" fill="none" stroke-linecap="round">
-        <path class="signal-arc arc-1" d="M 250 110 A 55 55 0 0 1 350 110" stroke-width="5" />
-        <path class="signal-arc arc-2" d="M 225 85 A 85 85 0 0 1 375 85" stroke-width="5" />
-        <path class="signal-arc arc-3" d="M 200 60 A 115 115 0 0 1 400 60" stroke-width="5" />
+        <path class="signal-arc arc-1" d="M 250 110 A 55 55 0 0 1 350 110" stroke-width="6" />
+        <path class="signal-arc arc-2" d="M 225 85 A 85 85 0 0 1 375 85" stroke-width="6" />
+        <path class="signal-arc arc-3" d="M 200 60 A 115 115 0 0 1 400 60" stroke-width="6" />
       </g>
 
-      <!-- 2. PROTECTIVE SHIELD STRUCTURE (OUTER & INNER BOUNDARIES) -->
+      <!-- Protective Shield -->
       <path
         d="M 160 170 C 230 150 300 135 300 135 C 300 135 370 150 440 170 C 440 330 380 445 300 505 C 220 445 160 330 160 170 Z"
-        :fill="`url(#${shieldGradId})`" fill-opacity="var(--shield-bg-opacity)"
+        :fill="`url(#${shieldGradId})`"
+        fill-opacity="var(--icon-shield-opacity)"
       />
       <path
         class="shield-frame"
         d="M 160 170 C 230 150 300 135 300 135 C 300 135 370 150 440 170 C 440 330 380 445 300 505 C 220 445 160 330 160 170 Z"
-        fill="none" :stroke="`url(#${shieldGradId})`" stroke-width="7" stroke-linejoin="round"
+        fill="none"
+        :stroke="`url(#${shieldGradId})`"
+        stroke-width="8"
+        stroke-linejoin="round"
         stroke-linecap="round"
       />
       <path
         d="M 185 192 C 240 176 300 162 300 162 C 300 162 360 176 415 192 C 415 320 365 418 300 472 C 235 418 185 320 185 192 Z"
-        fill="none" :stroke="`url(#${shieldGradId})`" stroke-width="2" stroke-opacity="var(--stroke-base-opacity)"
+        fill="none"
+        :stroke="`url(#${shieldGradId})`"
+        stroke-width="2.5"
+        stroke-opacity="var(--icon-stroke-opacity)"
         stroke-dasharray="8 6"
       />
 
-      <!-- 3. INTERCONNECTED HARDWARE CIRCUIT TRACES & BUS LINES -->
+      <!-- Hardware Circuit Traces -->
       <g :stroke="`url(#${coreGradId})`" fill="none" stroke-linecap="round" stroke-linejoin="round">
-        <path class="circuit-line" stroke-width="3.5" d="M 300 162 L 300 230" />
-        <path class="circuit-line-rev" stroke-width="3" d="M 300 390 L 300 472" />
-        <path class="circuit-line" stroke-width="3" d="M 230 270 L 300 230 L 370 270" />
-        <path class="circuit-line-rev" stroke-width="3" d="M 370 350 L 300 390 L 230 350" />
-        <path class="circuit-line" stroke-width="3" d="M 230 270 L 230 350" />
-        <path class="circuit-line-rev" stroke-width="3" d="M 370 270 L 370 350" />
+        <path class="circuit-line" stroke-width="4" d="M 300 162 L 300 230" />
+        <path class="circuit-line-rev" stroke-width="3.5" d="M 300 390 L 300 472" />
+        <path class="circuit-line" stroke-width="3.5" d="M 230 270 L 300 230 L 370 270" />
+        <path class="circuit-line-rev" stroke-width="3.5" d="M 370 350 L 300 390 L 230 350" />
+        <path class="circuit-line" stroke-width="3.5" d="M 230 270 L 230 350" />
+        <path class="circuit-line-rev" stroke-width="3.5" d="M 370 270 L 370 350" />
         <path :stroke="`url(#${coreGradId})`" stroke-width="2" stroke-opacity="0.6" d="M 230 270 L 370 350" />
         <path :stroke="`url(#${coreGradId})`" stroke-width="2" stroke-opacity="0.6" d="M 370 270 L 230 350" />
       </g>
 
-      <!-- 4. ROTATING DATA PACKETS (OTA FIRMWARE STREAM) -->
+      <!-- Data Packets -->
       <g class="data-packet">
-        <circle cx="300" cy="230" r="4.5" fill="var(--data-packet-fill)" />
-        <circle cx="370" cy="350" r="4.5" fill="var(--data-packet-fill)" />
+        <circle cx="300" cy="230" r="5" fill="var(--icon-packet-fill)" />
+        <circle cx="370" cy="350" r="5" fill="var(--icon-packet-fill)" />
       </g>
 
-      <!-- 5. CENTRAL SECURE MESH CORE & HARDWARE NODES -->
+      <!-- Central Secure Core -->
       <polygon
-        class="central-core-ring" points="300,210 380,256 380,348 300,394 220,348 220,256" fill="none"
-        :stroke="`url(#${coreGradId})`" stroke-width="2.5" stroke-dasharray="6 10"
+        class="central-core-ring"
+        points="300,210 380,256 380,348 300,394 220,348 220,256"
+        fill="none"
+        :stroke="`url(#${coreGradId})`"
+        stroke-width="3"
+        stroke-dasharray="6 10"
       />
       <g class="central-core-inner">
         <circle cx="300" cy="310" r="32" :fill="`url(#${nodeGlowGradId})`" />
         <polygon
-          points="300,285 322,298 322,322 300,335 278,322 278,298" fill="none" :stroke="`url(#${shieldGradId})`"
-          stroke-width="3.5" stroke-linejoin="round"
+          points="300,285 322,298 322,322 300,335 278,322 278,298"
+          fill="none"
+          :stroke="`url(#${shieldGradId})`"
+          stroke-width="4"
+          stroke-linejoin="round"
         />
         <path
           d="M 294 308 L 294 304 A 6 6 0 0 1 306 304 L 306 308 M 292 308 L 308 308 L 308 320 L 292 320 Z"
-          fill="none" stroke="var(--mode-accent-contrast)" stroke-width="2.5" stroke-linecap="round"
+          fill="none"
+          stroke="var(--icon-accent-contrast)"
+          stroke-width="3"
+          stroke-linecap="round"
           stroke-linejoin="round"
         />
       </g>
 
-      <!-- 6. PULSING NETWORK NODES (VERIFIED HARDWARE ENDPOINTS) -->
+      <!-- Network Nodes -->
       <g :fill="`url(#${shieldGradId})`">
-        <circle class="node-point node-delay-1" cx="300" cy="230" r="7" />
-        <circle cx="300" cy="230" r="3" fill="var(--mode-accent-contrast)" />
-        <circle class="node-point node-delay-2" cx="370" cy="270" r="7" />
-        <circle cx="370" cy="270" r="3" fill="var(--mode-accent-contrast)" />
-        <circle class="node-point node-delay-3" cx="370" cy="350" r="7" />
-        <circle cx="370" cy="350" r="3" fill="var(--mode-accent-contrast)" />
-        <circle class="node-point node-delay-1" cx="300" cy="390" r="7" />
-        <circle cx="300" cy="390" r="3" fill="var(--mode-accent-contrast)" />
-        <circle class="node-point node-delay-2" cx="230" cy="350" r="7" />
-        <circle cx="230" cy="350" r="3" fill="var(--mode-accent-contrast)" />
-        <circle class="node-point node-delay-3" cx="230" cy="270" r="7" />
-        <circle cx="230" cy="270" r="3" fill="var(--mode-accent-contrast)" />
+        <circle class="node-point node-delay-1" cx="300" cy="230" r="7.5" />
+        <circle cx="300" cy="230" r="3" fill="var(--icon-accent-contrast)" />
+        <circle class="node-point node-delay-2" cx="370" cy="270" r="7.5" />
+        <circle cx="370" cy="270" r="3" fill="var(--icon-accent-contrast)" />
+        <circle class="node-point node-delay-3" cx="370" cy="350" r="7.5" />
+        <circle cx="370" cy="350" r="3" fill="var(--icon-accent-contrast)" />
+        <circle class="node-point node-delay-1" cx="300" cy="390" r="7.5" />
+        <circle cx="300" cy="390" r="3" fill="var(--icon-accent-contrast)" />
+        <circle class="node-point node-delay-2" cx="230" cy="350" r="7.5" />
+        <circle cx="230" cy="350" r="3" fill="var(--icon-accent-contrast)" />
+        <circle class="node-point node-delay-3" cx="230" cy="270" r="7.5" />
+        <circle cx="230" cy="270" r="3" fill="var(--icon-accent-contrast)" />
       </g>
     </g>
   </svg>
 </template>
 
 <style scoped>
-/* Base / Light Mode CSS Variables (WCAG AA Compliant on Light Backgrounds) */
+/* Default (Light Mode): Bound to Nuxt UI / Tailwind v4 semantic theme tokens */
 .node-fota-icon {
-  --shield-bg-opacity: 0.08;
-  --stroke-base-opacity: 0.4;
-  --glow-intensity: 0.2;
-  --glow-color: rgba(2, 132, 199, 0.2);
-  --mode-accent-contrast: #0f172a;
-  --data-packet-fill: #0284c7;
-
-  /* Accessible Light Mode Gradient Palette */
-  --shield-stop-0-a: #0284c7;
-  --shield-stop-0-b: #047857;
-  --shield-stop-0-c: #6d28d9;
-  --shield-stop-0-d: #c2410c;
-
-  --shield-stop-1-a: #0369a1;
-  --shield-stop-1-b: #0e7490;
-  --shield-stop-1-c: #7e22ce;
-  --shield-stop-1-d: #b45309;
-
-  --core-stop-0-a: #047857;
-  --core-stop-0-b: #6d28d9;
-  --core-stop-0-c: #c2410c;
-  --core-stop-0-d: #0284c7;
-
-  --core-stop-1-a: #0e7490;
-  --core-stop-1-b: #7e22ce;
-  --core-stop-1-c: #b45309;
-  --core-stop-1-d: #0369a1;
+  --icon-primary: var(--ui-primary, var(--color-primary-600));
+  --icon-secondary: var(--color-primary-700, #0f766e);
+  --icon-shield-opacity: 0.1;
+  --icon-stroke-opacity: 0.4;
+  --icon-glow: color-mix(in srgb, var(--ui-primary, #14b8a6) 18%, transparent);
+  --icon-accent-contrast: var(--ui-text-highlighted, #09090b);
+  --icon-packet-fill: var(--ui-primary, var(--color-primary-600));
 }
 
-/* Dark Mode CSS Variables (Vibrant Neon Contrast) */
-:root.dark .node-fota-icon,
-.dark .node-fota-icon,
-.theme-dark {
-  --shield-bg-opacity: 0.16;
-  --stroke-base-opacity: 0.6;
-  --glow-intensity: 0.85;
-  --glow-color: rgba(0, 242, 254, 0.6);
-  --mode-accent-contrast: #ffffff;
-  --data-packet-fill: #ffffff;
-
-  --shield-stop-0-a: #00f2fe;
-  --shield-stop-0-b: #00f5a0;
-  --shield-stop-0-c: #7b2cbf;
-  --shield-stop-0-d: #ff9e00;
-
-  --shield-stop-1-a: #4facfe;
-  --shield-stop-1-b: #00d9f6;
-  --shield-stop-1-c: #c77dff;
-  --shield-stop-1-d: #ff5400;
-
-  --core-stop-0-a: #00f5a0;
-  --core-stop-0-b: #7b2cbf;
-  --core-stop-0-c: #ff9e00;
-  --core-stop-0-d: #00f2fe;
-
-  --core-stop-1-a: #00d9f6;
-  --core-stop-1-b: #c77dff;
-  --core-stop-1-c: #ff5400;
-  --core-stop-1-d: #4facfe;
+/* Dark Mode: Automatically adapts when .dark is active on <html> */
+:global(.dark) .node-fota-icon:not(.theme-light),
+.node-fota-icon.theme-dark {
+  --icon-primary: var(--ui-primary, var(--color-primary-400));
+  --icon-secondary: var(--color-success-400, #34d399);
+  --icon-shield-opacity: 0.16;
+  --icon-stroke-opacity: 0.6;
+  --icon-glow: color-mix(in srgb, var(--ui-primary, #2dd4bf) 40%, transparent);
+  --icon-accent-contrast: #ffffff;
+  --icon-packet-fill: #ffffff;
 }
 
-.theme-light {
-  --shield-bg-opacity: 0.08;
-  --stroke-base-opacity: 0.4;
-  --glow-intensity: 0.2;
-  --glow-color: rgba(2, 132, 199, 0.2);
-  --mode-accent-contrast: #0f172a;
-  --data-packet-fill: #0284c7;
-
-  --shield-stop-0-a: #0284c7;
-  --shield-stop-0-b: #047857;
-  --shield-stop-0-c: #6d28d9;
-  --shield-stop-0-d: #c2410c;
-
-  --shield-stop-1-a: #0369a1;
-  --shield-stop-1-b: #0e7490;
-  --shield-stop-1-c: #7e22ce;
-  --shield-stop-1-d: #b45309;
-
-  --core-stop-0-a: #047857;
-  --core-stop-0-b: #6d28d9;
-  --core-stop-0-c: #c2410c;
-  --core-stop-0-d: #0284c7;
-
-  --core-stop-1-a: #0e7490;
-  --core-stop-1-b: #7e22ce;
-  --core-stop-1-c: #b45309;
-  --core-stop-1-d: #0369a1;
-}
-
-@media (prefers-color-scheme: dark) {
-  .node-fota-icon:not(.theme-light) {
-    --shield-bg-opacity: 0.16;
-    --stroke-base-opacity: 0.6;
-    --glow-intensity: 0.85;
-    --glow-color: rgba(0, 242, 254, 0.6);
-    --mode-accent-contrast: #ffffff;
-    --data-packet-fill: #ffffff;
-
-    --shield-stop-0-a: #00f2fe;
-    --shield-stop-0-b: #00f5a0;
-    --shield-stop-0-c: #7b2cbf;
-    --shield-stop-0-d: #ff9e00;
-
-    --shield-stop-1-a: #4facfe;
-    --shield-stop-1-b: #00d9f6;
-    --shield-stop-1-c: #c77dff;
-    --shield-stop-1-d: #ff5400;
-
-    --core-stop-0-a: #00f5a0;
-    --core-stop-0-b: #7b2cbf;
-    --core-stop-0-c: #ff9e00;
-    --core-stop-0-d: #00f2fe;
-
-    --core-stop-1-a: #00d9f6;
-    --core-stop-1-b: #c77dff;
-    --core-stop-1-c: #ff5400;
-    --core-stop-1-d: #4facfe;
-  }
-}
-
-/* Dynamic Gradient Stop Animations */
 .stop-shield-0 {
-  animation: animShieldStop0 16s ease-in-out infinite;
+  animation: animShieldStop0 10s ease-in-out infinite alternate;
 }
 
 .stop-shield-1 {
-  animation: animShieldStop1 16s ease-in-out infinite;
+  animation: animShieldStop1 10s ease-in-out infinite alternate;
 }
 
 .stop-core-0 {
-  animation: animCoreStop0 16s ease-in-out infinite;
+  animation: animCoreStop0 10s ease-in-out infinite alternate;
 }
 
 .stop-core-1 {
-  animation: animCoreStop1 16s ease-in-out infinite;
+  animation: animCoreStop1 10s ease-in-out infinite alternate;
 }
 
 @keyframes animShieldStop0 {
-  0%,
+  0% {
+    stop-color: var(--icon-primary);
+  }
   100% {
-    stop-color: var(--shield-stop-0-a);
-  }
-  25% {
-    stop-color: var(--shield-stop-0-b);
-  }
-  50% {
-    stop-color: var(--shield-stop-0-c);
-  }
-  75% {
-    stop-color: var(--shield-stop-0-d);
+    stop-color: var(--icon-secondary);
   }
 }
 
 @keyframes animShieldStop1 {
-  0%,
+  0% {
+    stop-color: var(--icon-secondary);
+  }
   100% {
-    stop-color: var(--shield-stop-1-a);
-  }
-  25% {
-    stop-color: var(--shield-stop-1-b);
-  }
-  50% {
-    stop-color: var(--shield-stop-1-c);
-  }
-  75% {
-    stop-color: var(--shield-stop-1-d);
+    stop-color: var(--icon-primary);
   }
 }
 
 @keyframes animCoreStop0 {
-  0%,
+  0% {
+    stop-color: var(--icon-secondary);
+  }
   100% {
-    stop-color: var(--core-stop-0-a);
-  }
-  25% {
-    stop-color: var(--core-stop-0-b);
-  }
-  50% {
-    stop-color: var(--core-stop-0-c);
-  }
-  75% {
-    stop-color: var(--core-stop-0-d);
+    stop-color: var(--icon-primary);
   }
 }
 
 @keyframes animCoreStop1 {
-  0%,
+  0% {
+    stop-color: var(--icon-primary);
+  }
   100% {
-    stop-color: var(--core-stop-1-a);
-  }
-  25% {
-    stop-color: var(--core-stop-1-b);
-  }
-  50% {
-    stop-color: var(--core-stop-1-c);
-  }
-  75% {
-    stop-color: var(--core-stop-1-d);
+    stop-color: var(--icon-secondary);
   }
 }
 
-/* Animations and Visual Enhancements */
-.fota-logo-group {
+.fota-icon-group {
   transform-origin: center;
-  filter: drop-shadow(0 0 10px var(--glow-color));
+  filter: drop-shadow(0 0 8px var(--icon-glow));
 }
 
 .signal-arc {
@@ -443,11 +357,9 @@ const computedStyle = computed(() => {
 .arc-1 {
   animation-delay: 0s;
 }
-
 .arc-2 {
   animation-delay: 0.5s;
 }
-
 .arc-3 {
   animation-delay: 1s;
 }
@@ -521,11 +433,9 @@ const computedStyle = computed(() => {
 .node-delay-1 {
   animation-delay: 0.3s;
 }
-
 .node-delay-2 {
   animation-delay: 0.7s;
 }
-
 .node-delay-3 {
   animation-delay: 1.1s;
 }
@@ -536,9 +446,8 @@ const computedStyle = computed(() => {
     opacity: 0.6;
   }
   100% {
-    transform: scale(1.35);
+    transform: scale(1.3);
     opacity: 1;
-    filter: drop-shadow(0 0 6px currentColor);
   }
 }
 

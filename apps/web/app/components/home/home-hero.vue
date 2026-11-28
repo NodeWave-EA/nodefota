@@ -65,7 +65,7 @@ const heroCopy = {
   actions: [
     {
       label: 'Get Started',
-      to: '/register',
+      to: '/auth/register',
       icon: 'i-lucide-arrow-right',
       color: 'primary',
       variant: 'solid',
@@ -259,7 +259,7 @@ function getEventBadgeColor(category: DeviceEventCategory) {
             class="rounded-xs font-mono text-xs"
           >
             <template #leading>
-              <span aria-hidden="true" class="h-1.5 w-1.5 rounded-xs bg-teal-400" />
+              <span aria-hidden="true" class="size-1.5 rounded-xs bg-success" />
             </template>
             {{ heroCopy.statusBadge }}
           </UBadge>
@@ -271,7 +271,7 @@ function getEventBadgeColor(category: DeviceEventCategory) {
         >
           {{ heroCopy.headline }}
           <span
-            class="block bg-linear-to-r from-cobalt-500 via-brand-500 to-teal-400 bg-clip-text text-transparent dark:from-cobalt-400 dark:via-brand-400 dark:to-teal-300"
+            class="block bg-linear-to-r from-primary via-secondary to-primary bg-clip-text text-transparent"
           >
             {{ heroCopy.highlightedText }}
           </span>
@@ -292,13 +292,13 @@ function getEventBadgeColor(category: DeviceEventCategory) {
             class="rounded-xs font-semibold transition-transform duration-200 motion-safe:hover:-translate-y-0.5"
           >
             <template v-if="index === 1" #leading>
-              <UIcon :name="action.icon" aria-hidden="true" class="h-4 w-4" />
+              <UIcon :name="action.icon" aria-hidden="true" class="size-4" />
             </template>
 
             {{ action.label }}
 
             <template v-if="index === 0" #trailing>
-              <UIcon :name="action.icon" aria-hidden="true" class="h-4 w-4" />
+              <UIcon :name="action.icon" aria-hidden="true" class="size-4" />
             </template>
           </UButton>
         </div>
@@ -316,7 +316,7 @@ function getEventBadgeColor(category: DeviceEventCategory) {
             class="flex flex-col gap-1 bg-default px-4 py-3.5 sm:p-3.5"
           >
             <div class="flex items-center gap-1.5 text-muted">
-              <UIcon :name="item.icon" aria-hidden="true" class="h-3.5 w-3.5 text-primary" />
+              <UIcon :name="item.icon" aria-hidden="true" class="size-3.5 text-primary" />
               <span class="font-sans text-[11px] font-medium tracking-wider uppercase">
                 {{ item.title }}
               </span>
@@ -340,7 +340,7 @@ function getEventBadgeColor(category: DeviceEventCategory) {
             class="flex flex-wrap items-center justify-between gap-2 bg-elevated/60 px-4 py-2.5 sm:col-span-12"
           >
             <div class="flex items-center gap-2">
-              <span aria-hidden="true" class="h-2 w-2 rounded-xs bg-primary" />
+              <span aria-hidden="true" class="size-2 rounded-xs bg-primary" />
               <span class="font-mono text-xs font-medium text-muted">
                 console / fleet-overview
               </span>
@@ -390,7 +390,7 @@ function getEventBadgeColor(category: DeviceEventCategory) {
                 Active Devices
               </dt>
               <dd class="flex items-center gap-2 font-mono text-xl font-bold tabular-nums text-highlighted sm:text-2xl">
-                <span aria-hidden="true" class="h-2 w-2 rounded-xs bg-green-500" />
+                <span aria-hidden="true" class="size-2 rounded-xs bg-success" />
                 {{ fleetStats.activeDevices }}
               </dd>
             </div>
@@ -404,7 +404,7 @@ function getEventBadgeColor(category: DeviceEventCategory) {
               <dd class="flex items-center gap-2 font-mono text-xl font-bold tabular-nums text-primary sm:text-2xl">
                 <span
                   aria-hidden="true"
-                  class="h-2 w-2 rounded-xs bg-primary"
+                  class="size-2 rounded-xs bg-primary"
                   :class="{ 'motion-safe:animate-pulse': isActive }"
                 />
                 {{ fleetStats.updatingNow }}
@@ -471,21 +471,21 @@ function getEventBadgeColor(category: DeviceEventCategory) {
 
               <div class="grid grid-cols-3 gap-2 pt-1 text-xs">
                 <div class="flex items-center gap-1.5">
-                  <UIcon name="i-lucide-check-circle-2" aria-hidden="true" class="h-3.5 w-3.5 shrink-0 text-green-500" />
+                  <UIcon name="i-lucide-check-circle-2" aria-hidden="true" class="size-3.5 shrink-0 text-success" />
                   <span class="font-mono text-highlighted">
                     {{ activeCampaign.succeededCount }} <span class="text-muted">Succeeded</span>
                   </span>
                 </div>
 
                 <div class="flex items-center gap-1.5">
-                  <UIcon name="i-lucide-refresh-cw" aria-hidden="true" class="h-3.5 w-3.5 shrink-0 text-primary" />
+                  <UIcon name="i-lucide-refresh-cw" aria-hidden="true" class="size-3.5 shrink-0 text-primary" />
                   <span class="font-mono text-highlighted">
                     {{ activeCampaign.inProgressCount }} <span class="text-muted">Updating</span>
                   </span>
                 </div>
 
                 <div class="flex items-center gap-1.5">
-                  <UIcon name="i-lucide-alert-triangle" aria-hidden="true" class="h-3.5 w-3.5 shrink-0 text-red-500" />
+                  <UIcon name="i-lucide-alert-triangle" aria-hidden="true" class="size-3.5 shrink-0 text-error" />
                   <span class="font-mono text-highlighted">
                     {{ activeCampaign.failedCount }} <span class="text-muted">Failed</span>
                   </span>

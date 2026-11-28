@@ -40,7 +40,7 @@ const faqAccordionItems = computed<AccordionItem[]>(() => {
         </p>
 
         <UButton
-          to="/support"
+          to="/contact"
           color="neutral"
           variant="outline"
           size="md"

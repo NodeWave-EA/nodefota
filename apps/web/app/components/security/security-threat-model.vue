@@ -68,7 +68,7 @@ defineOptions({
               <td class="px-4 py-3.5 font-sans font-medium text-highlighted">
                 {{ row.protection }}
               </td>
-              <td class="px-4 py-3.5 font-mono text-teal-400 sm:px-6">
+              <td class="px-4 py-3.5 font-mono text-primary sm:px-6">
                 {{ row.mitigatedBy }}
               </td>
             </tr>

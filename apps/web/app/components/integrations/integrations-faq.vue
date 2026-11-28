@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { AccordionItem } from '@nuxt/ui'
 import type { FAQItem } from '~/types/integrations'
 
 defineOptions({
@@ -28,34 +29,68 @@ const faqs: FAQItem[] = [
   },
 ]
 
-const accordionItems = faqs.map(faq => ({
+const accordionItems: AccordionItem[] = faqs.map((faq, idx) => ({
+  value: `integration-faq-${idx}`,
   label: faq.question,
   content: faq.answer,
 }))
 </script>
 
 <template>
-  <section class="flex flex-col gap-4 py-6">
-    <div class="flex flex-col gap-1">
-      <span class="font-mono text-xs font-bold text-primary uppercase">05 // FREQUENTLY ASKED QUESTIONS</span>
-      <h2 class="font-sans text-2xl font-bold text-highlighted">
-        Integration FAQ
-      </h2>
-    </div>
+  <section id="faq" aria-labelledby="integrations-faq-heading" class="w-full scroll-mt-24">
+    <div class="grid grid-cols-1 items-start gap-8 lg:grid-cols-12 lg:gap-10">
+      <div class="flex flex-col items-start gap-4 lg:col-span-4">
+        <UBadge
+          color="primary"
+          variant="subtle"
+          size="sm"
+          class="rounded-xs font-mono text-xs font-semibold tracking-wider uppercase"
+        >
+          05 // FREQUENTLY ASKED QUESTIONS
+        </UBadge>
 
-    <div class="-mx-4 border-y border-default bg-default p-4 sm:mx-0 sm:rounded-xs sm:border sm:p-6">
-      <UAccordion :items="accordionItems" class="font-sans text-sm">
-        <template #default="{ item }">
-          <div class="flex items-center justify-between py-2.5 text-sm font-bold text-highlighted cursor-pointer">
-            <span>{{ item.label }}</span>
-          </div>
-        </template>
-        <template #content="{ item }">
-          <p class="pb-3 text-xs leading-relaxed text-muted sm:text-sm">
-            {{ item.content }}
-          </p>
-        </template>
-      </UAccordion>
+        <h2
+          id="integrations-faq-heading"
+          class="font-sans text-3xl font-bold tracking-tight text-highlighted sm:text-4xl"
+        >
+          Integration FAQ
+        </h2>
+
+        <p class="font-sans text-sm leading-relaxed text-muted sm:text-base">
+          Technical guidance on microcontroller support, build toolchains, S3-compatible storage, and self-hosted deployment.
+        </p>
+
+        <UButton
+          to="/contact"
+          color="neutral"
+          variant="outline"
+          size="md"
+          leading-icon="i-lucide-life-buoy"
+          class="rounded-xs font-semibold"
+        >
+          Contact Technical Support
+        </UButton>
+      </div>
+
+      <div class="lg:col-span-8">
+        <div
+          class="-mx-4 overflow-hidden border-y border-default bg-default sm:mx-0 sm:w-full sm:rounded-xs sm:border"
+        >
+          <UAccordion
+            type="single"
+            collapsible
+            :default-value="['integration-faq-0']"
+            :items="accordionItems"
+            :ui="{
+              root: 'divide-y divide-default',
+              item: 'bg-default',
+              trigger: 'px-4 py-4 sm:px-6 sm:py-4.5 font-sans text-sm sm:text-base font-semibold text-highlighted hover:bg-elevated/40 transition-colors rounded-none',
+              content: 'px-4 pb-5 pt-1 sm:px-6 font-sans text-sm leading-relaxed text-muted',
+              trailingIcon: 'text-primary',
+            }"
+          />
+        </div>
+      </div>
     </div>
   </section>
 </template>

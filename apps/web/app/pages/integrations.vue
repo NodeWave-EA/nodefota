@@ -20,14 +20,16 @@ useSeoMeta({
 </script>
 
 <template>
-  <main class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-    <IntegrationsHero />
-    <IntegrationArchitecture />
-    <IntegrationsDeviceEcosystem />
-    <IntegrationsDevelopmentTools />
-    <IntegrationsInfrastructure />
-    <IntegrationsFuture />
-    <IntegrationsFAQ />
-    <IntegrationsFinalCTA />
-  </main>
+  <UContainer class="py-10 sm:py-16 lg:py-20">
+    <div class="flex w-full flex-col gap-20 sm:gap-28 lg:gap-32">
+      <IntegrationsHero />
+      <IntegrationArchitecture />
+      <IntegrationsDeviceEcosystem />
+      <IntegrationsDevelopmentTools />
+      <IntegrationsInfrastructure />
+      <IntegrationsFuture />
+      <IntegrationsFAQ />
+      <IntegrationsFinalCTA />
+    </div>
+  </UContainer>
 </template>

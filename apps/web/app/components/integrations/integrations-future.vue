@@ -16,7 +16,7 @@ const futureScope: IntegrationItem[] = [
     statusLabel: 'Planned Roadmap',
     methodOrTech: 'MQTT v5 Broker Integration',
     icon: 'i-lucide-radio-receiver',
-    iconColor: 'text-amber-400',
+    iconColor: 'text-warning',
   },
   {
     id: 'lorawan',
@@ -28,7 +28,7 @@ const futureScope: IntegrationItem[] = [
     statusLabel: 'Planned Roadmap',
     methodOrTech: 'FUOTA Delta Protocol',
     icon: 'i-lucide-wifi-off',
-    iconColor: 'text-amber-400',
+    iconColor: 'text-warning',
   },
   {
     id: 'cellular',
@@ -40,7 +40,7 @@ const futureScope: IntegrationItem[] = [
     statusLabel: 'Planned Roadmap',
     methodOrTech: 'SIMCOM & Quectel Modems',
     icon: 'i-lucide-signal',
-    iconColor: 'text-amber-400',
+    iconColor: 'text-warning',
   },
   {
     id: 'linux-gateways',
@@ -52,35 +52,37 @@ const futureScope: IntegrationItem[] = [
     statusLabel: 'Planned Roadmap',
     methodOrTech: 'RAUC / Mender Client',
     icon: 'i-lucide-terminal-square',
-    iconColor: 'text-amber-400',
+    iconColor: 'text-warning',
   },
 ]
 </script>
 
 <template>
-  <section class="flex flex-col gap-4 py-6">
-    <div class="flex flex-col gap-1">
-      <span class="font-mono text-xs font-bold text-warning uppercase">04 // ARCHITECTURE EXTENSIONS</span>
-      <h2 class="font-sans text-2xl font-bold text-highlighted">
+  <section aria-labelledby="integrations-future-heading" class="flex flex-col gap-6">
+    <div class="flex flex-col items-start gap-2">
+      <UBadge color="warning" variant="subtle" size="sm" class="rounded-xs font-mono text-xs font-semibold uppercase">
+        04 // ARCHITECTURE EXTENSIONS
+      </UBadge>
+      <h2 id="integrations-future-heading" class="font-sans text-3xl font-bold tracking-tight text-highlighted sm:text-4xl">
         Future Possibilities & Roadmap
       </h2>
-      <p class="font-sans text-xs text-muted">
+      <p class="font-sans text-sm text-muted">
         The documented core implementation targets ESP32/ESP8266 REST/HTTPS delivery. The protocols below represent future extension directions.
       </p>
     </div>
 
     <div class="-mx-4 flex flex-col overflow-hidden border-y border-default bg-default sm:mx-0 sm:rounded-xs sm:border">
-      <div class="grid grid-cols-1 gap-px bg-border/20 sm:grid-cols-2 lg:grid-cols-4">
+      <div class="grid grid-cols-1 gap-px bg-border sm:grid-cols-2 lg:grid-cols-4">
         <div
           v-for="item in futureScope"
           :key="item.id"
-          class="flex flex-col justify-between gap-3 bg-default p-4.5 transition-colors hover:bg-elevated/40 opacity-90"
+          class="flex flex-col justify-between gap-3 bg-default p-4.5 opacity-90 transition-colors hover:bg-elevated/40"
         >
           <div class="flex flex-col gap-2.5">
             <div class="flex items-center justify-between gap-2">
               <div class="flex items-center gap-2">
-                <div class="flex h-7 w-7 items-center justify-center rounded-xs border border-default bg-elevated/60">
-                  <UIcon :name="item.icon" class="h-3.5 w-3.5" :class="item.iconColor" aria-hidden="true" />
+                <div class="flex size-7 items-center justify-center rounded-xs border border-default bg-elevated/60">
+                  <UIcon :name="item.icon" class="size-3.5" :class="item.iconColor" aria-hidden="true" />
                 </div>
                 <span class="font-mono text-[10px] font-bold tracking-wider text-muted uppercase">
                   {{ item.eyebrow }}
@@ -102,7 +104,7 @@ const futureScope: IntegrationItem[] = [
             </div>
           </div>
 
-          <div class="mt-2 font-mono text-[11px] font-semibold text-muted truncate">
+          <div class="mt-2 truncate font-mono text-[11px] font-semibold text-muted">
             {{ item.methodOrTech }}
           </div>
         </div>
