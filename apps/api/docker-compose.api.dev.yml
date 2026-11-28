@@ -30,8 +30,8 @@ services:
         - action: sync
           path: ./src
           target: /app/src
-        # Sync Prisma schema changes
-        - action: sync
+        # Restart on Prisma schema updates so `bunx prisma generate` runs on startup
+        - action: sync+restart
           path: ./prisma
           target: /app/prisma
         # Restart container on environment variable updates
@@ -41,9 +41,10 @@ services:
         - action: sync+restart
           path: .env.clients
           target: /app/.env.clients
-        # Rebuild container image if dependencies change
-        - action: rebuild
+        # Restart container on dependency updates so `bun install` syncs the volume
+        - action: sync+restart
           path: package.json
+          target: /app/package.json
 
 networks:
   fota_network:

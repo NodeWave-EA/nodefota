@@ -15,8 +15,12 @@ RUN bun install
 # Copy application source code and Prisma schema
 COPY . .
 
-# Generate Prisma Client and compile NestJS application
-RUN if [ -d "prisma" ]; then bunx prisma generate || true; fi \
+# Generate Prisma Client (using placeholder URLs) and compile NestJS application
+RUN if [ -d "prisma" ]; then \
+      DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy" \
+      SHADOW_DATABASE_URL="postgresql://dummy:dummy@localhost:5432/shadow" \
+      bunx prisma generate; \
+    fi \
     && bun run build
 
 # --- Stage 2: Production Runtime ---
@@ -33,15 +37,16 @@ ENV NODE_ENV=production
 COPY package.json ./
 RUN bun install --production
 
-# Copy compiled application code and Prisma binaries from builder stage
+# Copy compiled application code and Prisma artifacts (if generated inside node_modules)
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
-COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
+RUN --mount=from=builder,source=/app/node_modules,target=/tmp/builder_nm \
+    if [ -d "/tmp/builder_nm/.prisma" ]; then cp -r /tmp/builder_nm/.prisma ./node_modules/.prisma; fi && \
+    if [ -d "/tmp/builder_nm/@prisma" ]; then cp -r /tmp/builder_nm/@prisma ./node_modules/@prisma; fi
 
 # Assign recursive non-root ownership to node user (UID/GID 1000)
-RUN chown -R node:node /app
+RUN chown -R 1000:1000 /app
 
-USER node
+USER 1000:1000
 
 EXPOSE 5050
 

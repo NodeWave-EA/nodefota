@@ -14,8 +14,12 @@ RUN bun install
 # Copy source code and schemas
 COPY . .
 
-# Generate Prisma client if schema directory exists and grant 1000:1000 ownership
-RUN if [ -d "prisma" ]; then bunx prisma generate || true; fi \
+# Generate Prisma client using placeholder URLs during build (real .env is injected at runtime)
+RUN if [ -d "prisma" ]; then \
+      DATABASE_URL="postgresql://dummy:dummy@localhost:5432/dummy" \
+      SHADOW_DATABASE_URL="postgresql://dummy:dummy@localhost:5432/shadow" \
+      bunx prisma generate; \
+    fi \
     && mkdir -p /app/node_modules \
     && chown -R 1000:1000 /app
 
@@ -24,4 +28,4 @@ ENV PATH="/app/node_modules/.bin:${PATH}"
 
 EXPOSE 5050
 
-CMD ["bun", "run", "dev"]
+CMD ["sh", "-c", "bun install && if [ -d \"prisma\" ]; then bunx prisma generate; fi && bun run dev"]
