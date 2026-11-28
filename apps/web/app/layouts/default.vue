@@ -1,20 +1,12 @@
 <template>
-  <div class="min-h-screen flex flex-col">
-    <ClientOnly>
-      <AppHeader />
-      <template #fallback>
-        <header class="h-16 border-b border-border bg-background" />
-      </template>
-    </ClientOnly>
+  <div class="min-h-screen flex flex-col bg-default text-default">
+    <AppHeader />
 
     <UMain class="flex-1">
-      <UContainer>
-        <slot />
-      </UContainer>
+      <slot />
     </UMain>
 
-    <ClientOnly>
-      <AppFooter />
-    </ClientOnly>
+    <LazyAppLangSwitcher hydrate-on-idle />
+    <AppFooter />
   </div>
 </template>
