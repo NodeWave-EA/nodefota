@@ -1,4 +1,4 @@
-# --- Stage 1: Build ---
+# Stage 1: Build the Nuxt application
 FROM node:26-slim AS builder
 
 WORKDIR /app
@@ -18,22 +18,19 @@ COPY . .
 # Build Nuxt standalone production output (.output)
 RUN bun run build
 
-# --- Stage 2: Production Runtime ---
-FROM node:26-slim AS runtime
+# Stage 2: Production runtime
+FROM node:26-slim AS runner
 
 WORKDIR /app
 
 ENV NODE_ENV=production \
-    NUXT_HOST=0.0.0.0 \
-    NUXT_PORT=5040
+    NITRO_HOST=0.0.0.0 \
+    NITRO_PORT=5040
 
-# Copy compiled Nitro server bundle from builder stage
-COPY --from=builder /app/.output ./.output
+# Copy built Nitro output from builder and assign ownership to 1000:1000
+COPY --from=builder --chown=1000:1000 /app/.output ./.output
 
-# Assign non-root recursive ownership to node user (UID/GID 1000)
-RUN chown -R node:node /app
-
-USER node
+USER 1000:1000
 
 EXPOSE 5040
 

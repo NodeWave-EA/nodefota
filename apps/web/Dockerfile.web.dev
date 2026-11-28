@@ -23,4 +23,4 @@ ENV PATH="/app/node_modules/.bin:${PATH}"
 
 EXPOSE 5040
 
-CMD ["npx", "nuxt", "dev", "--host", "0.0.0.0", "--port", "5040"]
+CMD ["sh", "-c", "bun install && bun run dev --host 0.0.0.0 --port 5040"]

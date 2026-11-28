@@ -36,16 +36,16 @@ services:
             - node_modules/
             - .nuxt/
             - .output/
-        # Restart container on env variable updates
+        # Restart container on env or dependency updates
         - action: sync+restart
           path: .env
           target: /app/.env
         - action: sync+restart
           path: .env.clients
           target: /app/.env.clients
-        # Rebuild container image when package dependencies update
-        - action: rebuild
+        - action: sync+restart
           path: package.json
+          target: /app/package.json
 
 networks:
   fota_network:
