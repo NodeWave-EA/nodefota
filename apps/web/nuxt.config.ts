@@ -15,10 +15,24 @@ export default defineNuxtConfig({
     '@nuxt/scripts',
     '@nuxtjs/turnstile',
     '@nuxtjs/mcp-toolkit',
+    '@nuxtjs/supabase',
   ],
 
   devtools: {
     enabled: true,
+  },
+
+  vite: {
+    server: {
+      allowedHosts: [
+        'web.127.0.0.1.nip.io',
+        'web.localhost',
+        'supabase.127.0.0.1.nip.io',
+        'supabase.localhost',
+        'api.127.0.0.1.nip.io',
+        'api.localhost',
+      ],
+    },
   },
 
   app: {
@@ -120,6 +134,10 @@ export default defineNuxtConfig({
       turnstileSiteKey: process.env.NUXT_PUBLIC_TURNSTILE_SITE_KEY,
       siteUrl: process.env.NUXT_PUBLIC_SITE_URL,
       apiBaseUrl: process.env.NUXT_PUBLIC_API_URL,
+      supabase: {
+        url: process.env.SUPABASE_URL || process.env.NUXT_PUBLIC_SUPABASE_URL,
+        key: process.env.SUPABASE_KEY || process.env.NUXT_PUBLIC_SUPABASE_KEY,
+      },
     },
   },
 
@@ -186,14 +204,57 @@ export default defineNuxtConfig({
     cron: true,
   },
 
-  mcp: {
-    enabled: true,
+  supabase: {
+    url: process.env.SUPABASE_URL || process.env.NUXT_PUBLIC_SUPABASE_URL,
+    key: process.env.SUPABASE_KEY || process.env.NUXT_PUBLIC_SUPABASE_KEY,
+    types: '~/types/supabase.db.types.ts',
+    useSsrCookies: true,
+    cookieOptions: {
+      maxAge: 60 * 60 * 8,
+      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+    },
+    clientOptions: {
+      auth: {
+        flowType: 'pkce',
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
+        persistSession: true,
+      },
+    },
+    redirect: true,
+    redirectOptions: {
+      login: '/auth/login',
+      callback: '/auth/callback',
+      include: ['/dashboard', '/dashboard/**'],
+      exclude: [
+        '/',
+        '/features',
+        '/security',
+        '/integrations',
+        '/about',
+        '/contact',
+        '/auth/**',
+      ],
+      saveRedirectToCookie: true,
+    },
   },
 
-  prerender: {
-    crawlLinks: true,
-    routes: ['/sitemap.xml', '/robots.txt'],
+  mcp: {
+    name: 'NODEFOTA MCP',
+    route: '/mcp', // Default route for the MCP server
+    dir: 'mcp', // Base directory for MCP definitions (relative to server/)
   },
+
+  routeRules: {
+    '/auth/**': { robots: false },
+    '/dashboard/**': { robots: false },
+  },
+
+  // prerender: {
+  //   crawlLinks: true,
+  //   routes: ['/sitemap.xml', '/robots.txt'],
+  // },
 
   experimental: {
     payloadExtraction: true,
@@ -257,7 +318,6 @@ export default defineNuxtConfig({
 
   sitemap: {
     enabled: true,
-    zeroRuntime: true,
     autoI18n: true,
     discoverImages: true,
     discoverVideos: true,
