@@ -1,176 +1,349 @@
 @import 'tailwindcss';
 @import '@nuxt/ui';
 
-/* ==========================================================================
-   TYPOGRAPHY THEME
-   ========================================================================== */
-@theme {
-  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
-}
+@source "../../../content/**/*";
 
-/* ==========================================================================
-   COLOR PALETTES & ANIMATIONS
-   ========================================================================== */
 @theme static {
-  /* Cobalt Brand Palette */
-  --color-cobalt-50: oklch(95.3% 0.022 260.723);
-  --color-cobalt-100: oklch(90.8% 0.045 258.763);
-  --color-cobalt-200: oklch(81.6% 0.091 257.776);
-  --color-cobalt-300: oklch(72.9% 0.14 258.068);
-  --color-cobalt-400: oklch(64.7% 0.186 258.256);
-  --color-cobalt-500: oklch(57.8% 0.228 260.025);
-  --color-cobalt-600: oklch(49.2% 0.19 259.799);
-  --color-cobalt-700: oklch(40.2% 0.152 259.656);
-  --color-cobalt-800: oklch(30.7% 0.109 258.934);
-  --color-cobalt-900: oklch(20.4% 0.063 257.52);
-  --color-cobalt-950: oklch(14.7% 0.037 249.929);
+  /* Technical & Embedded Control-Plane Typography */
+  --font-sans: 'Plus Jakarta Sans', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Plus Jakarta Sans', 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, monospace;
+  --font-serif: 'Lora', ui-serif, Georgia, serif;
 
-  /* Cobalt Neutral Gray Palette */
-  --color-cobalt-gray-50: oklch(99.1% 0 0);
-  --color-cobalt-gray-100: oklch(98.2% 0.002 247.839);
-  --color-cobalt-gray-200: oklch(94.2% 0.005 247.879);
-  --color-cobalt-gray-300: oklch(91.1% 0.007 247.901);
-  --color-cobalt-gray-400: oklch(86.7% 0.011 247.949);
-  --color-cobalt-gray-500: oklch(76.9% 0.015 248.017);
-  --color-cobalt-gray-600: oklch(55.8% 0.016 244.893);
-  --color-cobalt-gray-700: oklch(42.8% 0.015 248.172);
-  --color-cobalt-gray-800: oklch(34.5% 0.013 248.212);
-  --color-cobalt-gray-900: oklch(26.2% 0.009 248.19);
-  --color-cobalt-gray-950: oklch(20.7% 0.008 248.192);
-
-  /* Status Colors */
-  --color-green-50: #effdf5;
-  --color-green-100: #d9fbe8;
-  --color-green-200: #b3f5d1;
-  --color-green-300: #75edae;
-  --color-green-400: #00dc82;
-  --color-green-500: #00c16a;
-  --color-green-600: #00a155;
-  --color-green-700: #007f45;
-  --color-green-800: #016538;
-  --color-green-900: #0a5331;
-  --color-green-950: #052e16;
-
-  --color-brand-50: #f0f9ff;
-  --color-brand-100: #e0f2fe;
-  --color-brand-200: #bae6fd;
-  --color-brand-300: #7dd3fc;
-  --color-brand-400: #38bdf8;
-  --color-brand-500: #3b82f6;
-  --color-brand-600: #2563eb;
-  --color-brand-700: #1d4ed8;
-  --color-brand-800: #1e40af;
-  --color-brand-900: #1e3a8a;
-  --color-brand-950: #172554;
-
-  --color-teal-50: #f0fdfa;
-  --color-teal-100: #ccfbf1;
-  --color-teal-200: #99f6e4;
-  --color-teal-300: #5eead4;
-  --color-teal-400: #2dd4bf;
-  --color-teal-500: #14b8a6;
-  --color-teal-600: #0d9488;
-  --color-teal-700: #0f766e;
-  --color-teal-800: #115e59;
-  --color-teal-900: #134e4a;
-  --color-teal-950: #042f2e;
-
-  /* Keyframe Animations */
-  --animate-fade-in: fade-in 0.5s ease-out both;
-  --animate-fade-in-up: fade-in-up 0.6s ease-out both;
-  --animate-fade-in-down: fade-in-down 0.5s ease-out both;
+  /* Keyframe Animation Utilities */
   --animate-slide-in-left: slide-in-left 0.5s ease-out both;
   --animate-slide-in-right: slide-in-right 0.5s ease-out both;
   --animate-scale-in: scale-in 0.4s ease-out both;
-  --animate-float: float 6s ease-in-out infinite;
-  --animate-pulse-soft: pulse-soft 3s ease-in-out infinite;
-  --animate-shimmer: shimmer 2s ease-in-out infinite;
   --animate-gradient: gradient-shift 8s ease infinite;
   --animate-count-up: count-up 1s ease-out both;
   --animate-glow: glow 2s ease-in-out infinite alternate;
+  --animate-fade-in: fade-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-fade-in-up: fade-in-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-fade-in-down: fade-in-down 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-float: float 5s ease-in-out infinite;
+  --animate-pulse-soft: pulse-soft 3.5s ease-in-out infinite;
+  --animate-shimmer: shimmer 2.5s linear infinite;
 }
 
 /* ==========================================================================
-   BASE STYLES
+   NODEFOTA Control-Plane Surface Tokens (WCAG AA/AAA Light & Dark Contrast)
    ========================================================================== */
+:root,
+[data-surface] {
+  --blog-header-offset: var(--ui-header-height);
+
+  /* Light Mode: Crisp Lab Slate Canvas + Pure Elevated Cards */
+  --app-bg: #f8fafc; /* slate-50 */
+  --app-surface-subtle: #f1f5f9; /* slate-100 */
+  --app-surface-hover: #ffffff; /* pure white elevated cards */
+  --app-border: #cbd5e1; /* slate-300 (3:1+ UI border contrast) */
+
+  /* Map Nuxt UI v4 Semantic Surface & Border Tokens */
+  --ui-bg: var(--app-bg);
+  --ui-bg-muted: var(--app-surface-subtle);
+  --ui-bg-elevated: var(--app-surface-hover);
+  --ui-bg-accented: #e2e8f0; /* slate-200 */
+  --ui-border: var(--app-border);
+  --ui-border-muted: #e2e8f0;
+  --ui-border-accented: #94a3b8;
+}
+
+.dark,
+.dark[data-surface] {
+  /* Dark Mode: Deep Obsidian Silicon Canvas + Distinct Elevated Panels */
+  --app-bg: #060b14; /* deep midnight navy-slate */
+  --app-surface-subtle: #0b1220; /* recessed panel surface */
+  --app-surface-hover: #111b2e; /* elevated interactive card */
+  --app-border: #1e2d45; /* crisp telemetry hairline border */
+
+  /* Map Nuxt UI v4 Semantic Surface & Border Tokens */
+  --ui-bg: var(--app-bg);
+  --ui-bg-muted: var(--app-surface-subtle);
+  --ui-bg-elevated: var(--app-surface-hover);
+  --ui-bg-accented: #182640;
+  --ui-border: var(--app-border);
+  --ui-border-muted: #152136;
+  --ui-border-accented: #2c4163;
+}
+
+/* Blueprint Surface Profile (Slightly deeper technical tint) */
+[data-surface='blueprint'] {
+  --app-bg: #f1f5f9;
+  --app-surface-subtle: #e2e8f0;
+  --app-surface-hover: #ffffff;
+  --app-border: #cbd5e1;
+}
+
+.dark[data-surface='blueprint'] {
+  --app-bg: #040811;
+  --app-surface-subtle: #09101f;
+  --app-surface-hover: #0f192e;
+  --app-border: #1b2b47;
+}
+
 @layer base {
   html {
-    font-size: 16px;
     scroll-behavior: smooth;
-    font-family: var(--font-sans), system-ui;
+    font-size: 100%;
+    font-family: var(--font-sans);
+    color-scheme: light dark;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--app-bg);
+    color: var(--ui-text);
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font-family: inherit;
+  }
+
+  code,
+  pre,
+  kbd,
+  samp {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-sans);
+    letter-spacing: -0.025em;
+    font-weight: 800;
+    line-height: 1.15;
+  }
+
+  article,
+  .prose {
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.75;
+  }
+
+  /* High-visibility WCAG 2.2 AA Keyboard Focus Ring */
+  *:focus-visible {
+    outline: 2px solid var(--ui-primary);
+    outline-offset: 2px;
+  }
+
+  /* Minimal Precision Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--app-border);
+    border-radius: 2px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--ui-primary);
+  }
 }
 
-/* ==========================================================================
-   5. NUXT UI THEME VARIABLES
-   ========================================================================== */
-:root {
-  --ui-radius: 0.625rem;
+/* Text Gradients (Cyan -> Indigo Silicon Spectrum) */
+@utility gradient-text {
+  background: linear-gradient(135deg, var(--color-cyan-600), var(--color-indigo-600));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+
+  &:where(.dark, .dark *) {
+    background: linear-gradient(135deg, var(--color-cyan-400), var(--color-indigo-400));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
 }
 
-:root,
-.light {
-  --ui-bg: var(--ui-color-neutral-100);
-  --ui-bg-muted: var(--ui-color-neutral-100);
-  --ui-text-inverted: var(--ui-color-neutral-50);
-  --ui-primary: var(--ui-color-primary-600);
-
-  /* Scrollbar Theme Tokens (Light Mode) */
-  --scrollbar-track: transparent;
-  --scrollbar-thumb: rgba(15, 23, 42, 0.2);
-  --scrollbar-thumb-hover: rgba(15, 23, 42, 0.4);
+/* Surfaces & Glassmorphism */
+@utility glass {
+  background: color-mix(in srgb, var(--app-bg) 82%, transparent);
+  backdrop-filter: blur(16px) saturate(160%);
+  border: 1px solid var(--app-border);
 }
 
-.dark {
-  --ui-text-highlighted: var(--ui-color-neutral-50);
-  --ui-bg-inverted: var(--ui-color-neutral-50);
-  --ui-border-inverted: var(--ui-color-neutral-50);
-  --ui-bg: var(--ui-color-neutral-900);
-  --ui-bg-muted: var(--ui-color-neutral-800);
-  --ui-text-inverted: var(--ui-color-neutral-900);
-  --ui-primary: var(--ui-color-primary-400);
-
-  /* Scrollbar Theme Tokens (Dark Mode) */
-  --scrollbar-track: transparent;
-  --scrollbar-thumb: rgba(255, 255, 255, 0.2);
-  --scrollbar-thumb-hover: rgba(255, 255, 255, 0.4);
+/* Technical Grid & Matrix Utilities */
+@utility grid-pattern {
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--app-border) 55%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--app-border) 55%, transparent) 1px, transparent 1px);
+  background-size: 32px 32px;
 }
 
-/* ==========================================================================
-   SCROLLBAR (GLOBAL & CHILDREN)
-   ========================================================================== */
-/* Standard W3C / Firefox implementation */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+@utility dot-pattern {
+  background-image: radial-gradient(
+    circle,
+    color-mix(in srgb, var(--ui-primary) 28%, transparent) 1px,
+    transparent 1px
+  );
+  background-size: 24px 24px;
 }
 
-/* WebKit implementation (Chrome, Safari, Edge) */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+/* Interactive Card Elevation */
+@utility hover-lift {
+  transition:
+    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.25s ease,
+    box-shadow 0.25s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--ui-primary) 50%, var(--app-border));
+    box-shadow: 0 12px 28px -10px color-mix(in srgb, var(--ui-primary) 18%, transparent);
+  }
 }
 
-::-webkit-scrollbar-track {
-  background: var(--scrollbar-track);
-  border-radius: 9999px;
+/* Stagger & Scroll Reveal Helpers */
+.stagger-1 {
+  animation-delay: 0.1s;
+}
+.stagger-2 {
+  animation-delay: 0.2s;
+}
+.stagger-3 {
+  animation-delay: 0.3s;
+}
+.stagger-4 {
+  animation-delay: 0.4s;
+}
+.stagger-5 {
+  animation-delay: 0.5s;
+}
+.stagger-6 {
+  animation-delay: 0.6s;
 }
 
-::-webkit-scrollbar-thumb {
-  background-color: var(--scrollbar-thumb);
-  border-radius: 9999px;
-  border: 1.5px solid transparent;
-  background-clip: padding-box;
-  transition: background-color 0.2s ease;
+.animate-on-scroll {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 0.5s ease-out,
+    transform 0.5s ease-out;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background-color: var(--scrollbar-thumb-hover);
+.animate-on-scroll.is-visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-::-webkit-scrollbar-corner {
-  background: transparent;
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* View Transition Theme Toggle */
+@keyframes scale-down {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(0.98);
+  }
+}
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none !important;
+  mix-blend-mode: normal !important;
+}
+
+::view-transition-old(root) {
+  animation: scale-down 500ms cubic-bezier(0.16, 1, 0.3, 1) both;
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 9999;
+}
+
+.light::view-transition-old(root) {
+  background-color: var(--app-bg) !important;
+  z-index: 9999;
+}
+
+.light::view-transition-new(root) {
+  z-index: 1;
+}
+
+.dark::view-transition-old(root) {
+  background-color: #060b14 !important;
+}
+
+/* Vue Page & Layout Transitions */
+.page-enter-active,
+.page-leave-active {
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease;
+}
+
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(6px);
+}
+
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-6px);
+}
+
+.layout-enter-active,
+.layout-leave-active {
+  transition: opacity 0.2s ease;
+}
+
+.layout-enter-from,
+.layout-leave-to {
+  opacity: 0;
+}
+
+/* Google Translate Widget Isolation */
+html,
+body {
+  top: 0px !important;
+  margin-top: 0px !important;
+  position: static !important;
+}
+
+iframe.goog-te-banner-frame,
+iframe.skiptranslate,
+.goog-te-banner-frame,
+.goog-te-banner,
+.goog-te-balloon-frame,
+#goog-gt-tt,
+.goog-gt-tt,
+.goog-te-spinner-pos {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  height: 0px !important;
+  pointer-events: none !important;
 }
