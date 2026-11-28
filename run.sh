@@ -56,7 +56,7 @@ link_supabase_env() {
 
   # 2. Generate docker/supabase/.env.clients if .env exists and .env.clients is missing
   if [ -e "docker/supabase/.env" ] && [ ! -e "docker/supabase/.env.clients" ] && [ -x "docker/supabase/nodewave/manage.sh" ]; then
-    ./docker/supabase/nodewave/manage.sh env --format all > "docker/supabase/.env.clients"
+    ./docker/supabase/nodewave/manage.sh env --format all >"docker/supabase/.env.clients"
     chmod 600 "docker/supabase/.env.clients" 2>/dev/null || true
     echo "  ✓ Generated docker/supabase/.env.clients"
   fi
@@ -83,14 +83,6 @@ link_supabase_env() {
     link_if_present "$_clients_src" "apps/api/.env.clients"
   else
     echo "  ⚠ Warning: no Supabase client env file found for apps/web/.env.clients and apps/api/.env.clients" >&2
-  fi
-
-  # Clean up legacy .env.clients symlinks safely under set -e
-  if [ -L "apps/web/.env.clients" ]; then
-    rm -f "apps/web/.env.clients"
-  fi
-  if [ -L "apps/api/.env.clients" ]; then
-    rm -f "apps/api/.env.clients"
   fi
 }
 

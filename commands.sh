@@ -17,3 +17,6 @@ fd -e sh -x shfmt -w -i 2 -ci
 
 # Run shellcheck on all .sh files using fd
 fd -e sh -x shellcheck
+
+# Update project dependencies
+bunx npm-check-updates -i --workspaces
