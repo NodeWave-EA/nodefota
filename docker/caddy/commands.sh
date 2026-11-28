@@ -10,12 +10,12 @@ sudo update-ca-certificates
 # Arch
 sudo trust anchor --store ./caddy-root-ca.crt
 
-# BETTER
+# BETTER ARCH
 # using root run.sh wrapper script
 sh run.sh cp-from caddy /data/caddy/pki/authorities/local/root.crt ./caddy-root-ca.crt
+sudo trust anchor --store ./caddy-root-ca.crt
 # or
 sh run.sh cp caddy:/data/caddy/pki/authorities/local/root.crt docker/caddy/caddy-root-ca.crt
-
 sudo trust anchor --store ./docker/caddy/caddy-root-ca.crt
 
 # REVERT
